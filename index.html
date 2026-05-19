@@ -2,185 +2,136 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>授業レビューサイト</title>
+  <title>授業レビュー入力</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: auto;
-    }
-
-    .form-box, .review-card {
-      background: white;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 12px;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      box-sizing: border-box;
-    }
-
-    textarea {
-      height: 90px;
-    }
-
-    button {
-      margin-top: 16px;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      background: #2563eb;
-      color: white;
-      font-size: 16px;
-      border-radius: 8px;
-    }
-
-    .review-card h2 {
-      margin-top: 0;
-    }
-
-    .tag {
-      display: inline-block;
-      background: #e0ecff;
-      padding: 4px 8px;
-      border-radius: 6px;
-      margin: 3px;
-      font-size: 13px;
-    }
+    body { font-family: sans-serif; background:#f5f5f5; padding:20px; }
+    .container { max-width:800px; margin:auto; }
+    .box, .card { background:white; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow:0 2px 8px #ddd; }
+    label { font-weight:bold; display:block; margin-top:15px; }
+    input, textarea, select { width:100%; padding:10px; margin-top:6px; box-sizing:border-box; }
+    textarea { height:90px; }
+    .range-row { display:flex; align-items:center; gap:10px; }
+    .range-row input { flex:1; }
+    .value { width:60px; text-align:right; font-weight:bold; }
+    button { width:100%; padding:12px; margin-top:20px; border:none; border-radius:8px; background:#2563eb; color:white; font-size:16px; }
+    .tag { display:inline-block; background:#e8f0ff; padding:5px 8px; border-radius:6px; margin:4px; }
   </style>
 </head>
-
 <body>
-  <div class="container">
-    <h1>授業レビューサイト</h1>
+<div class="container">
+  <h1>授業レビュー入力</h1>
 
-    <div class="form-box">
-      <h2>授業レビューを入力</h2>
+  <div class="box">
+    <label>授業名</label>
+    <input id="className" placeholder="例：アルゴリズム">
 
-      <label>授業名</label>
-      <input type="text" id="className" placeholder="例：アルゴリズム">
+    <label>先生名</label>
+    <input id="teacherName" placeholder="例：森本 裕介">
 
-      <label>先生名</label>
-      <input type="text" id="teacherName" placeholder="例：森本 裕介">
+    <label>楽さ（★1〜5）</label>
+    <select id="easyLevel">
+      <option value="★">★ かなりきつい</option>
+      <option value="★★">★★ きつめ</option>
+      <option value="★★★">★★★ 普通</option>
+      <option value="★★★★">★★★★ 楽め</option>
+      <option value="★★★★★">★★★★★ かなり楽</option>
+    </select>
 
-      <label>テスト割合（%）</label>
-      <input type="number" id="testRate" min="0" max="100" placeholder="例：60">
-
-      <label>レポート割合（%）</label>
-      <input type="number" id="reportRate" min="0" max="100" placeholder="例：30">
-
-      <label>小テスト・出席・その他（%）</label>
-      <input type="number" id="otherRate" min="0" max="100" placeholder="例：10">
-
-      <label>楽さ</label>
-      <select id="easyLevel">
-        <option value="★">★ きつめ</option>
-        <option value="★★">★★ 普通</option>
-        <option value="★★★">★★★ 楽め</option>
-      </select>
-
-      <label>感想</label>
-      <textarea id="comment" placeholder="例：毎週課題はあるが、試験がないので取りやすい。"></textarea>
-
-      <button onclick="addReview()">追加する</button>
+    <label>テスト割合</label>
+    <div class="range-row">
+      <input type="range" id="testRate" min="0" max="100" step="10" value="0" oninput="updateValues()">
+      <span class="value" id="testValue">0%</span>
     </div>
 
-    <div id="reviewList"></div>
+    <label>レポート割合</label>
+    <div class="range-row">
+      <input type="range" id="reportRate" min="0" max="100" step="10" value="0" oninput="updateValues()">
+      <span class="value" id="reportValue">0%</span>
+    </div>
+
+    <label>課題・演習割合</label>
+    <div class="range-row">
+      <input type="range" id="taskRate" min="0" max="100" step="10" value="0" oninput="updateValues()">
+      <span class="value" id="taskValue">0%</span>
+    </div>
+
+    <label>小テスト・出席・その他割合</label>
+    <div class="range-row">
+      <input type="range" id="otherRate" min="0" max="100" step="10" value="0" oninput="updateValues()">
+      <span class="value" id="otherValue">0%</span>
+    </div>
+
+    <label>感想</label>
+    <textarea id="comment" placeholder="例：レポート中心で試験がないので取りやすい。"></textarea>
+
+    <button onclick="addReview()">レビューを追加</button>
   </div>
 
-  <script>
-    let reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+  <div id="reviewList"></div>
+</div>
 
-    function addReview() {
-      const className = document.getElementById("className").value;
-      const teacherName = document.getElementById("teacherName").value;
-      const testRate = document.getElementById("testRate").value;
-      const reportRate = document.getElementById("reportRate").value;
-      const otherRate = document.getElementById("otherRate").value;
-      const easyLevel = document.getElementById("easyLevel").value;
-      const comment = document.getElementById("comment").value;
+<script>
+let reviews = JSON.parse(localStorage.getItem("reviews")) || [];
 
-      if (!className || !teacherName) {
-        alert("授業名と先生名は入力してください");
-        return;
-      }
+function updateValues() {
+  document.getElementById("testValue").textContent = document.getElementById("testRate").value + "%";
+  document.getElementById("reportValue").textContent = document.getElementById("reportRate").value + "%";
+  document.getElementById("taskValue").textContent = document.getElementById("taskRate").value + "%";
+  document.getElementById("otherValue").textContent = document.getElementById("otherRate").value + "%";
+}
 
-      const review = {
-        className,
-        teacherName,
-        testRate,
-        reportRate,
-        otherRate,
-        easyLevel,
-        comment
-      };
+function addReview() {
+  const review = {
+    className: document.getElementById("className").value,
+    teacherName: document.getElementById("teacherName").value,
+    easyLevel: document.getElementById("easyLevel").value,
+    testRate: document.getElementById("testRate").value,
+    reportRate: document.getElementById("reportRate").value,
+    taskRate: document.getElementById("taskRate").value,
+    otherRate: document.getElementById("otherRate").value,
+    comment: document.getElementById("comment").value
+  };
 
-      reviews.push(review);
-      localStorage.setItem("reviews", JSON.stringify(reviews));
+  if (!review.className || !review.teacherName) {
+    alert("授業名と先生名を入力してください");
+    return;
+  }
 
-      clearForm();
-      displayReviews();
-    }
+  reviews.push(review);
+  localStorage.setItem("reviews", JSON.stringify(reviews));
+  displayReviews();
+}
 
-    function displayReviews() {
-      const reviewList = document.getElementById("reviewList");
-      reviewList.innerHTML = "";
+function displayReviews() {
+  const list = document.getElementById("reviewList");
+  list.innerHTML = "";
 
-      reviews.forEach((review, index) => {
-        reviewList.innerHTML += `
-          <div class="review-card">
-            <h2>${review.className}</h2>
-            <p><strong>先生：</strong>${review.teacherName}</p>
-            <span class="tag">テスト ${review.testRate || 0}%</span>
-            <span class="tag">レポート ${review.reportRate || 0}%</span>
-            <span class="tag">その他 ${review.otherRate || 0}%</span>
-            <span class="tag">楽さ ${review.easyLevel}</span>
-            <p>${review.comment}</p>
-            <button onclick="deleteReview(${index})">削除</button>
-          </div>
-        `;
-      });
-    }
+  reviews.forEach((r, i) => {
+    list.innerHTML += `
+      <div class="card">
+        <h2>${r.className}</h2>
+        <p><strong>先生：</strong>${r.teacherName}</p>
+        <span class="tag">楽さ ${r.easyLevel}</span>
+        <span class="tag">テスト ${r.testRate}%</span>
+        <span class="tag">レポート ${r.reportRate}%</span>
+        <span class="tag">課題 ${r.taskRate}%</span>
+        <span class="tag">その他 ${r.otherRate}%</span>
+        <p>${r.comment}</p>
+        <button onclick="deleteReview(${i})">削除</button>
+      </div>
+    `;
+  });
+}
 
-    function deleteReview(index) {
-      reviews.splice(index, 1);
-      localStorage.setItem("reviews", JSON.stringify(reviews));
-      displayReviews();
-    }
+function deleteReview(index) {
+  reviews.splice(index, 1);
+  localStorage.setItem("reviews", JSON.stringify(reviews));
+  displayReviews();
+}
 
-    function clearForm() {
-      document.getElementById("className").value = "";
-      document.getElementById("teacherName").value = "";
-      document.getElementById("testRate").value = "";
-      document.getElementById("reportRate").value = "";
-      document.getElementById("otherRate").value = "";
-      document.getElementById("comment").value = "";
-    }
-
-    displayReviews();
-  </script>
+updateValues();
+displayReviews();
+</script>
 </body>
 </html>
