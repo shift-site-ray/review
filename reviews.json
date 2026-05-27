@@ -1,0 +1,42 @@
+[
+  {
+    "classId": 1,
+    "attendance": "普通",
+    "testDifficulty": 1,
+    "reportDifficulty": 3,
+    "reportAmount": 4,
+    "assignmentDifficulty": 3,
+    "assignmentAmount": 4,
+    "comment": "Python初心者でも比較的ついていける。"
+  },
+  {
+    "classId": 2,
+    "attendance": "普通",
+    "testDifficulty": 4,
+    "reportDifficulty": 2,
+    "reportAmount": 2,
+    "assignmentDifficulty": 4,
+    "assignmentAmount": 3,
+    "comment": "数学苦手だとかなり重め。"
+  },
+  {
+    "classId": 3,
+    "attendance": "ゆるめ",
+    "testDifficulty": 1,
+    "reportDifficulty": 4,
+    "reportAmount": 5,
+    "assignmentDifficulty": 2,
+    "assignmentAmount": 2,
+    "comment": "試験は無いがレポート量は多い。"
+  },
+  {
+    "classId": 4,
+    "attendance": "普通",
+    "testDifficulty": 4,
+    "reportDifficulty": 3,
+    "reportAmount": 4,
+    "assignmentDifficulty": 4,
+    "assignmentAmount": 4,
+    "comment": "毎週課題あり。暗号好きには面白い。"
+  }
+]
