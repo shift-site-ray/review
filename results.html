@@ -93,7 +93,8 @@ function searchClasses(){
   const results = classes.filter(c => {
 
     const text =
-      c.name + c.teacher + c.memo + c.tags.join("");
+  　　c.name + c.teacher + c.memo + (c.tags || []).join("");
+      
 
     return (
       c.test <= maxTest &&
