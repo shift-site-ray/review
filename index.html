@@ -12,7 +12,7 @@ label{font-weight:bold;display:block;margin-top:14px;}
 input,select{width:100%;padding:10px;margin-top:6px;box-sizing:border-box;}
 .range-row{display:flex;gap:10px;align-items:center;}
 .range-row input{flex:1;}
-.value{width:55px;text-align:right;font-weight:bold;}
+.value{width:60px;text-align:right;font-weight:bold;}
 button{width:100%;padding:12px;margin-top:18px;border:none;border-radius:8px;background:#2563eb;color:white;font-size:16px;}
 .tag{display:inline-block;background:#e8f0ff;padding:5px 8px;border-radius:6px;margin:4px;font-size:14px;}
 .small{color:#666;font-size:14px;}
@@ -60,45 +60,22 @@ button{width:100%;padding:12px;margin-top:18px;border:none;border-radius:8px;bac
   <button onclick="searchClasses()">検索する</button>
 </div>
 
-<div id="resultList"></div>
+<div id="resultList">読み込み中...</div>
 </div>
 
 <script>
-const classes = [
-  {
-    name:"アルゴリズム",
-    teacher:"森本 裕介",
-    easy:3,
-    test:0,
-    report:60,
-    task:40,
-    other:0,
-    tags:["Python","レポート中心","演習あり","ノートPC必携"],
-    memo:"Pythonを使う授業。試験はなく、レポート60％・演習40％。テストを避けたい人に合いやすい。"
-  },
-  {
-    name:"微分方程式2",
-    teacher:"由良 文孝",
-    easy:2,
-    test:60,
-    report:30,
-    task:0,
-    other:10,
-    tags:["数学","試験あり","小テストあり"],
-    memo:"試験60％で数学寄り。微分方程式が得意な人向け。楽単狙いならやや注意。"
-  },
-  {
-    name:"数理工学実験1",
-    teacher:"櫻井 建成・森 竜樹",
-    easy:3,
-    test:0,
-    report:100,
-    task:0,
-    other:0,
-    tags:["実験","レポート100％","Mathematica"],
-    memo:"レポート100％の実験系授業。試験なし。文章作成や実験レポートが苦でない人向け。"
+let classes = [];
+
+async function loadClasses(){
+  try{
+    const response = await fetch("classes.json");
+    classes = await response.json();
+    displayResults(classes);
+  }catch(error){
+    document.getElementById("resultList").innerHTML =
+      `<div class="card">classes.json の読み込みに失敗しました。</div>`;
   }
-];
+}
 
 function updateValues(){
   document.getElementById("testValue").textContent = document.getElementById("maxTest").value + "%";
@@ -118,7 +95,7 @@ function searchClasses(){
   const maxTask = Number(document.getElementById("maxTask").value);
 
   const results = classes.filter(c => {
-    const text = (c.name + c.teacher + c.tags.join("") + c.memo);
+    const text = c.name + c.teacher + c.memo + c.tags.join("");
     return (
       c.easy >= easy &&
       c.test <= maxTest &&
@@ -136,7 +113,7 @@ function displayResults(results){
   list.innerHTML = "";
 
   if(results.length === 0){
-    list.innerHTML = `<div class="card">条件に合う授業が見つかりませんでした。条件を少しゆるめて検索してみてください。</div>`;
+    list.innerHTML = `<div class="card">条件に合う授業が見つかりませんでした。</div>`;
     return;
   }
 
@@ -158,7 +135,7 @@ function displayResults(results){
 }
 
 updateValues();
-displayResults(classes);
+loadClasses();
 </script>
 </body>
 </html>
