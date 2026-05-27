@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>楽単Search</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  font-family:sans-serif;
+  background:#f5f5f5;
+  margin:0;
+  padding:20px;
+}
+.container{
+  max-width:900px;
+  margin:auto;
+}
+.card{
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  margin-bottom:20px;
+  box-shadow:0 2px 8px #ddd;
+}
+.tag{
+  display:inline-block;
+  background:#e8f0ff;
+  padding:5px 8px;
+  border-radius:6px;
+  margin:4px;
+}
+.small{
+  color:#666;
+}
+a{
+  text-decoration:none;
+  color:#2563eb;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="index.html">← 検索画面に戻る</a>
+
+<h1>検索結果</h1>
+
+<div id="resultList">読み込み中...</div>
+
+</div>
+
+<script>
+
+let classes = [];
+let reviews = [];
+
+async function loadData(){
+
+  const classResponse = await fetch("classes.json");
+  classes = await classResponse.json();
+
+  const reviewResponse = await fetch("reviews.json");
+  reviews = await reviewResponse.json();
+
+  searchClasses();
+}
+
+function stars(n){
+  return "★".repeat(n) + "☆".repeat(5-n);
+}
+
+function average(arr,key){
+
+  if(arr.length === 0) return 0;
+
+  return (
+    arr.reduce((sum,item)=>sum + item[key],0)
+    / arr.length
+  ).toFixed(1);
+}
+
+function searchClasses(){
+
+  const params = new URLSearchParams(location.search);
+
+  const keyword = params.get("keyword") || "";
+  const attendance = params.get("attendance") || "";
+  const maxTest = Number(params.get("maxTest") || 100);
+  const minReport = Number(params.get("minReport") || 0);
+
+  const results = classes.filter(c => {
+
+    const text =
+      c.name + c.teacher + c.memo + c.tags.join("");
+
+    return (
+      c.test <= maxTest &&
+      c.report >= minReport &&
+      (keyword === "" || text.includes(keyword))
+    );
+  });
+
+  displayResults(results,attendance);
+}
+
+function displayResults(results,attendanceFilter){
+
+  const list = document.getElementById("resultList");
+
+  list.innerHTML = "";
+
+  if(results.length === 0){
+    list.innerHTML =
+      `<div class="card">条件に合う授業が見つかりませんでした。</div>`;
+    return;
+  }
+
+  results.forEach(c => {
+
+    const classReviews =
+      reviews.filter(r => r.classId === c.id);
+
+    if(
+      attendanceFilter &&
+      !classReviews.some(r => r.attendance === attendanceFilter)
+    ){
+      return;
+    }
+
+    const comments =
+      classReviews.map(r => `<li>${r.comment}</li>`).join("");
+
+    list.innerHTML += `
+      <div class="card">
+
+        <h2>${c.name}</h2>
+
+        <p><strong>先生：</strong>${c.teacher}</p>
+
+        <span class="tag">テスト ${c.test}%</span>
+        <span class="tag">レポート ${c.report}%</span>
+
+        <p>${c.memo}</p>
+
+        <h3>先輩レビュー</h3>
+
+        <p><strong>出席の厳しさ：</strong>
+        ${classReviews[0]?.attendance || "不明"}</p>
+
+        <p><strong>テスト難易度：</strong>
+        ${stars(Math.round(average(classReviews,"testDifficulty")))}</p>
+
+        <p><strong>レポート難易度：</strong>
+        ${stars(Math.round(average(classReviews,"reportDifficulty")))}</p>
+
+        <p><strong>レポート量：</strong>
+        ${stars(Math.round(average(classReviews,"reportAmount")))}</p>
+
+        <p><strong>課題難易度：</strong>
+        ${stars(Math.round(average(classReviews,"assignmentDifficulty")))}</p>
+
+        <p><strong>課題量：</strong>
+        ${stars(Math.round(average(classReviews,"assignmentAmount")))}</p>
+
+        <h3>先輩コメント</h3>
+
+        <ul>
+          ${comments}
+        </ul>
+
+      </div>
+    `;
+  });
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>
