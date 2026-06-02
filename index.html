@@ -7,210 +7,141 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:"Segoe UI",sans-serif;
   background:#f4f7fb;
   color:#111827;
 }
+
 header{
   background:linear-gradient(90deg,#003b8f,#0057d9);
   color:white;
-  padding:22px 36px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-header h1{margin:0;font-size:30px}
-header span{font-size:14px;margin-left:12px}
-
-.wrapper{
-  display:grid;
-  grid-template-columns:300px 1fr;
-  gap:24px;
-  padding:24px;
+  padding:28px 36px;
+  text-align:center;
 }
 
-.panel,.main-card,.course-card,.review-card{
+header h1{
+  margin:0;
+  font-size:34px;
+}
+
+header p{
+  margin:8px 0 0;
+  font-size:15px;
+}
+
+.container{
+  max-width:760px;
+  margin:32px auto;
+  padding:0 20px;
+}
+
+.search-card{
   background:white;
-  border-radius:14px;
-  box-shadow:0 4px 14px rgba(0,0,0,.08);
+  border-radius:18px;
+  padding:28px;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
 }
 
-.panel{padding:22px}
-.panel h2{margin-top:0}
 label{
   display:block;
-  font-weight:700;
-  margin-top:18px;
-  margin-bottom:6px;
+  font-weight:800;
+  margin-top:22px;
+  margin-bottom:8px;
 }
+
 input,select{
   width:100%;
-  padding:12px;
-  border:1px solid #d6dce5;
-  border-radius:8px;
-  font-size:14px;
-}
-.range-box{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-button{
-  width:100%;
-  margin-top:22px;
   padding:13px;
-  border:none;
-  border-radius:9px;
-  background:#0057d9;
-  color:white;
-  font-weight:700;
+  border:1px solid #d6dce5;
+  border-radius:10px;
   font-size:15px;
+}
+
+.range-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.range-value{
+  font-weight:800;
+  color:#0057d9;
+}
+
+.range-wrap{
+  position:relative;
+  height:42px;
+  margin-top:8px;
+}
+
+.range-wrap input[type=range]{
+  position:absolute;
+  left:0;
+  top:8px;
+  width:100%;
+  pointer-events:none;
+  appearance:none;
+  background:none;
+  padding:0;
+}
+
+.range-wrap input[type=range]::-webkit-slider-thumb{
+  pointer-events:auto;
+  appearance:none;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:#0057d9;
+  border:3px solid white;
+  box-shadow:0 0 0 2px #0057d9;
   cursor:pointer;
 }
+
+.range-wrap input[type=range]::-webkit-slider-runnable-track{
+  height:8px;
+  background:#dbeafe;
+  border-radius:999px;
+}
+
+button{
+  width:100%;
+  margin-top:28px;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:#0057d9;
+  color:white;
+  font-size:17px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#0046b5;
+}
+
 .reset{
+  margin-top:10px;
   background:white;
   color:#334155;
   border:1px solid #cbd5e1;
 }
 
-.main-card{padding:24px}
-.info-box{
-  background:#eef6ff;
-  border:1px solid #7cb7ff;
-  padding:16px;
-  border-radius:10px;
-  color:#004299;
-  font-weight:700;
-  margin-bottom:20px;
+.reset:hover{
+  background:#f8fafc;
 }
 
-.course-card{
-  padding:22px;
-  margin-bottom:24px;
-  border:1px solid #e5e7eb;
-}
-.course-header{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-}
-.course-title{
-  font-size:26px;
-  font-weight:800;
-}
-.badge{
-  display:inline-block;
-  background:#e6f0ff;
-  color:#0057d9;
-  padding:4px 8px;
-  border-radius:6px;
-  font-size:13px;
-  font-weight:700;
-}
-.tags{margin:12px 0}
-.tag{
-  display:inline-block;
-  background:#e9f1ff;
-  padding:5px 9px;
-  border-radius:6px;
-  margin:4px 4px 4px 0;
-  font-size:13px;
-}
-
-.course-body{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:24px;
-  margin-top:16px;
-}
-.eval-row{
-  display:grid;
-  grid-template-columns:90px 1fr 45px;
-  align-items:center;
-  gap:10px;
-  margin:10px 0;
-}
-.bar-bg{
-  height:8px;
-  background:#e5e7eb;
-  border-radius:999px;
-}
-.bar{
-  height:8px;
-  background:#2563eb;
-  border-radius:999px;
-}
-.review-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.note{
   margin-top:18px;
-}
-.review-card{
-  display:grid;
-  grid-template-columns:90px 1fr;
-  gap:14px;
+  background:#eef6ff;
+  color:#004299;
+  border:1px solid #93c5fd;
   padding:14px;
-  margin-top:10px;
-  border:1px solid #e5e7eb;
-}
-.avatar{
-  width:54px;
-  height:54px;
-  border-radius:50%;
-  background:#d8e0e8;
-  margin:auto;
-  position:relative;
-}
-.avatar:before{
-  content:"";
-  position:absolute;
-  top:10px;
-  left:17px;
-  width:20px;
-  height:20px;
-  background:#71808f;
-  border-radius:50%;
-}
-.avatar:after{
-  content:"";
-  position:absolute;
-  bottom:7px;
-  left:10px;
-  width:34px;
-  height:20px;
-  background:#71808f;
-  border-radius:50% 50% 40% 40%;
-}
-.year{
-  text-align:center;
-  font-size:12px;
-  margin-top:6px;
-}
-.year span{
-  display:inline-block;
-  background:#0057d9;
-  color:white;
-  padding:2px 8px;
-  border-radius:5px;
-  font-weight:700;
-}
-.review-tags span{
-  display:inline-block;
-  background:#f1f5f9;
-  border:1px solid #dbe2ea;
-  padding:4px 8px;
-  border-radius:6px;
-  margin:3px;
-  font-size:12px;
-}
-.stars{color:#f59e0b;font-weight:800}
-
-@media(max-width:850px){
-  .wrapper{grid-template-columns:1fr}
-  .course-body{grid-template-columns:1fr}
+  border-radius:10px;
+  font-size:14px;
 }
 </style>
 </head>
@@ -218,18 +149,16 @@ button{
 <body>
 
 <header>
-  <div>
-    <h1>楽単Search <span>先輩のレビューで楽単を見つけよう</span></h1>
-  </div>
+  <h1>楽単Search</h1>
+  <p>希望条件から、先輩レビュー付きの授業を検索</p>
 </header>
 
-<div class="wrapper">
+<div class="container">
 
-  <aside class="panel">
-    <h2>🔍 授業を検索</h2>
+  <div class="search-card">
 
     <label>キーワード</label>
-    <input id="keyword" placeholder="例：微分方程式、吉田、実験">
+    <input id="keyword" placeholder="例：Python、数学、レポート、吉田">
 
     <label>出席の厳しさ</label>
     <select id="attendance">
@@ -239,210 +168,89 @@ button{
       <option value="厳しい">厳しい</option>
     </select>
 
-    <label>テストの割合（％）</label>
-    <div class="range-box">
-      <input id="minTest" type="number" placeholder="最小値" min="0" max="100">
-      <input id="maxTest" type="number" placeholder="最大値" min="0" max="100">
+    <label class="range-title">
+      <span>試験割合</span>
+      <span class="range-value" id="testText">0%〜100%</span>
+    </label>
+    <div class="range-wrap">
+      <input type="range" id="minTest" min="0" max="100" step="10" value="0" oninput="syncRanges('test')">
+      <input type="range" id="maxTest" min="0" max="100" step="10" value="100" oninput="syncRanges('test')">
     </div>
 
-    <label>レポートの割合（％）</label>
-    <div class="range-box">
-      <input id="minReport" type="number" placeholder="最小値" min="0" max="100">
-      <input id="maxReport" type="number" placeholder="最大値" min="0" max="100">
+    <label class="range-title">
+      <span>レポート割合</span>
+      <span class="range-value" id="reportText">0%〜100%</span>
+    </label>
+    <div class="range-wrap">
+      <input type="range" id="minReport" min="0" max="100" step="10" value="0" oninput="syncRanges('report')">
+      <input type="range" id="maxReport" min="0" max="100" step="10" value="100" oninput="syncRanges('report')">
     </div>
 
-    <button onclick="searchClasses()">検索する</button>
-    <button class="reset" onclick="resetSearch()">条件をリセット</button>
-  </aside>
+    <button onclick="goResults()">検索する</button>
+    <button class="reset" onclick="resetForm()">条件をリセット</button>
 
-  <main class="main-card">
-    <h2 id="resultCount">検索結果</h2>
-
-    <div class="info-box">
-      💡 授業名・先生名・キーワードで検索できます。
+    <div class="note">
+      例：試験なしがいい場合は「試験割合 0%〜0%」にすると検索できます。
     </div>
 
-    <div id="resultList">読み込み中...</div>
-  </main>
+  </div>
 
 </div>
 
 <script>
-let classes = [];
-let reviews = [];
+function syncRanges(type){
+  const min = document.getElementById("min" + capitalize(type));
+  const max = document.getElementById("max" + capitalize(type));
 
-async function loadData(){
-  const classRes = await fetch("classes.json");
-  classes = await classRes.json();
+  let minVal = Number(min.value);
+  let maxVal = Number(max.value);
 
-  const reviewRes = await fetch("reviews.json");
-  reviews = await reviewRes.json();
-
-  displayResults(classes);
-}
-
-function getEvaluation(c){
-  if(c.evaluation) return c.evaluation;
-
-  return {
-    "テスト": c.test || 0,
-    "レポート": c.report || 0,
-    "課題": c.assignment || c.task || 0,
-    "その他": c.other || 0
-  };
-}
-
-function getEvalValue(c, key){
-  const ev = getEvaluation(c);
-  return ev[key] || 0;
-}
-
-function stars(n){
-  n = Number(n || 0);
-  return "★".repeat(n) + "☆".repeat(5-n);
-}
-
-function avg(list,key){
-  if(list.length === 0) return 0;
-  return Math.round(list.reduce((s,r)=>s + Number(r[key] || 0),0) / list.length);
-}
-
-function searchClasses(){
-  const keyword = document.getElementById("keyword").value.trim();
-  const attendance = document.getElementById("attendance").value;
-
-  const minTest = Number(document.getElementById("minTest").value || 0);
-  const maxTest = Number(document.getElementById("maxTest").value || 100);
-  const minReport = Number(document.getElementById("minReport").value || 0);
-  const maxReport = Number(document.getElementById("maxReport").value || 100);
-
-  const results = classes.filter(c=>{
-    const classReviews = reviews.filter(r=>r.classId === c.id);
-    const text = [
-      c.name,
-      c.teacher,
-      c.description,
-      c.memo,
-      ...(c.tags || [])
-    ].join("");
-
-    const test = getEvalValue(c,"テスト");
-    const report = getEvalValue(c,"レポート");
-
-    const attendanceOK =
-      attendance === "" || classReviews.some(r=>r.attendance === attendance);
-
-    return (
-      text.includes(keyword) &&
-      test >= minTest &&
-      test <= maxTest &&
-      report >= minReport &&
-      report <= maxReport &&
-      attendanceOK
-    );
-  });
-
-  displayResults(results);
-}
-
-function resetSearch(){
-  document.getElementById("keyword").value = "";
-  document.getElementById("attendance").value = "";
-  document.getElementById("minTest").value = "";
-  document.getElementById("maxTest").value = "";
-  document.getElementById("minReport").value = "";
-  document.getElementById("maxReport").value = "";
-  displayResults(classes);
-}
-
-function displayResults(results){
-  const list = document.getElementById("resultList");
-  document.getElementById("resultCount").textContent =
-    `検索結果：${results.length}件`;
-
-  list.innerHTML = "";
-
-  if(results.length === 0){
-    list.innerHTML = `<div class="course-card">条件に合う授業がありません。</div>`;
-    return;
+  if(minVal > maxVal){
+    if(event.target.id.startsWith("min")){
+      max.value = minVal;
+      maxVal = minVal;
+    }else{
+      min.value = maxVal;
+      minVal = maxVal;
+    }
   }
 
-  results.forEach(c=>{
-    const classReviews = reviews.filter(r=>r.classId === c.id);
-    const ev = getEvaluation(c);
-
-    const evalHtml = Object.entries(ev).map(([key,val])=>`
-      <div class="eval-row">
-        <div>${key}</div>
-        <div class="bar-bg"><div class="bar" style="width:${val}%"></div></div>
-        <div>${val}%</div>
-      </div>
-    `).join("");
-
-    const reviewHtml = classReviews.map(r=>`
-      <div class="review-card">
-        <div>
-          <div class="avatar"></div>
-          <div class="year">学籍番号上二桁<br><span>${r.studentYear || "24"}</span></div>
-        </div>
-        <div>
-          <div><strong>おすすめ度：</strong>
-            <span class="stars">${stars(r.recommend || 0)}</span>
-            ${r.recommend || 0}
-          </div>
-
-          <div class="review-tags">
-            <span>出席の厳しさ ${r.attendance || "不明"}</span>
-            <span>テスト難易度 ${r.testDifficulty || "-"}</span>
-            <span>レポート難易度 ${r.reportDifficulty || "-"}</span>
-            <span>レポート量 ${r.reportAmount || "-"}</span>
-            <span>課題難易度 ${r.assignmentDifficulty || "-"}</span>
-            <span>課題量 ${r.assignmentAmount || "-"}</span>
-          </div>
-
-          <p>${r.comment || ""}</p>
-        </div>
-      </div>
-    `).join("");
-
-    list.innerHTML += `
-      <section class="course-card">
-        <div class="course-header">
-          <div>
-            <div class="course-title">${c.name} <span class="badge">${c.credits || 2}単位</span></div>
-            <p>${c.teacher}</p>
-          </div>
-        </div>
-
-        <div class="tags">
-          ${(c.tags || []).map(t=>`<span class="tag">${t}</span>`).join("")}
-        </div>
-
-        <div class="course-body">
-          <div>
-            <h3>評価方法の割合</h3>
-            ${evalHtml}
-          </div>
-          <div>
-            <p>${c.pcRequired ? "💻 PC必携" : ""}</p>
-            <p>${c.required ? "🎓 必修科目" : "🎓 選択科目"}</p>
-            <h3>概要</h3>
-            <p>${c.description || c.memo || ""}</p>
-          </div>
-        </div>
-
-        <div class="review-title">
-          <h3>先輩レビュー</h3>
-          <span>レビュー数：${classReviews.length}件</span>
-        </div>
-
-        ${reviewHtml || "<p>まだレビューがありません。</p>"}
-      </section>
-    `;
-  });
+  document.getElementById(type + "Text").textContent =
+    minVal + "%〜" + maxVal + "%";
 }
 
-loadData();
+function capitalize(str){
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function goResults(){
+  const keyword = encodeURIComponent(document.getElementById("keyword").value.trim());
+  const attendance = encodeURIComponent(document.getElementById("attendance").value);
+
+  const minTest = document.getElementById("minTest").value;
+  const maxTest = document.getElementById("maxTest").value;
+  const minReport = document.getElementById("minReport").value;
+  const maxReport = document.getElementById("maxReport").value;
+
+  location.href =
+    `results.html?keyword=${keyword}&attendance=${attendance}&minTest=${minTest}&maxTest=${maxTest}&minReport=${minReport}&maxReport=${maxReport}`;
+}
+
+function resetForm(){
+  document.getElementById("keyword").value = "";
+  document.getElementById("attendance").value = "";
+
+  document.getElementById("minTest").value = 0;
+  document.getElementById("maxTest").value = 100;
+  document.getElementById("minReport").value = 0;
+  document.getElementById("maxReport").value = 100;
+
+  syncRanges("test");
+  syncRanges("report");
+}
+
+syncRanges("test");
+syncRanges("report");
 </script>
 
 </body>
