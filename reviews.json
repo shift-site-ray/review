@@ -1,42 +1,54 @@
 [
   {
+    "id": 1,
     "classId": 1,
+    "studentYear": "24",
     "attendance": "普通",
+    "recommend": 5,
     "testDifficulty": 1,
     "reportDifficulty": 3,
     "reportAmount": 4,
-    "assignmentDifficulty": 3,
-    "assignmentAmount": 4,
-    "comment": "Python初心者でも比較的ついていける。"
-  },
-  {
-    "classId": 2,
-    "attendance": "普通",
-    "testDifficulty": 4,
-    "reportDifficulty": 2,
-    "reportAmount": 2,
-    "assignmentDifficulty": 4,
+    "assignmentDifficulty": 2,
     "assignmentAmount": 3,
-    "comment": "数学苦手だとかなり重め。"
+    "comment": "試験がないのでかなり取りやすい。毎週課題はあるが内容は重くない。"
   },
   {
+    "id": 2,
+    "classId": 2,
+    "studentYear": "24",
+    "attendance": "普通",
+    "recommend": 3,
+    "testDifficulty": 5,
+    "reportDifficulty": 3,
+    "reportAmount": 2,
+    "assignmentDifficulty": 2,
+    "assignmentAmount": 2,
+    "comment": "試験が重い。復習しないと普通に落とす。"
+  },
+  {
+    "id": 3,
     "classId": 3,
-    "attendance": "ゆるめ",
+    "studentYear": "24",
+    "attendance": "厳しい",
+    "recommend": 4,
     "testDifficulty": 1,
     "reportDifficulty": 4,
     "reportAmount": 5,
-    "assignmentDifficulty": 2,
-    "assignmentAmount": 2,
-    "comment": "試験は無いがレポート量は多い。"
+    "assignmentDifficulty": 1,
+    "assignmentAmount": 1,
+    "comment": "レポート100%。実験後の考察を書くのが大変。"
   },
   {
+    "id": 4,
     "classId": 4,
+    "studentYear": "24",
     "attendance": "普通",
+    "recommend": 4,
     "testDifficulty": 4,
     "reportDifficulty": 3,
-    "reportAmount": 4,
-    "assignmentDifficulty": 4,
-    "assignmentAmount": 4,
-    "comment": "毎週課題あり。暗号好きには面白い。"
+    "reportAmount": 3,
+    "assignmentDifficulty": 2,
+    "assignmentAmount": 2,
+    "comment": "RSA暗号の話は面白いが群論の理解が必要。"
   }
 ]
