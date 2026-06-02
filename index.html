@@ -5,6 +5,8 @@
 <title>楽単Search</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
+
 <style>
 *{box-sizing:border-box}
 
@@ -71,39 +73,28 @@ input,select{
   color:#0057d9;
 }
 
-.range-wrap{
-  position:relative;
-  height:42px;
-  margin-top:8px;
+.slider{
+  margin:20px 8px 12px;
 }
 
-.range-wrap input[type=range]{
-  position:absolute;
-  left:0;
-  top:8px;
-  width:100%;
-  pointer-events:none;
-  appearance:none;
-  background:none;
-  padding:0;
-}
-
-.range-wrap input[type=range]::-webkit-slider-thumb{
-  pointer-events:auto;
-  appearance:none;
-  width:20px;
-  height:20px;
-  border-radius:50%;
+.noUi-connect{
   background:#0057d9;
-  border:3px solid white;
-  box-shadow:0 0 0 2px #0057d9;
-  cursor:pointer;
 }
 
-.range-wrap input[type=range]::-webkit-slider-runnable-track{
-  height:8px;
-  background:#dbeafe;
-  border-radius:999px;
+.noUi-handle{
+  border-radius:50%;
+  width:22px!important;
+  height:22px!important;
+  right:-11px!important;
+  top:-7px!important;
+  border:3px solid white;
+  background:#0057d9;
+  box-shadow:0 0 0 2px #0057d9;
+}
+
+.noUi-handle:before,
+.noUi-handle:after{
+  display:none;
 }
 
 button{
@@ -154,83 +145,83 @@ button:hover{
 </header>
 
 <div class="container">
-
   <div class="search-card">
 
     <label>キーワード</label>
     <input id="keyword" placeholder="例：Python、数学、レポート、吉田">
 
-    <label>出席の厳しさ</label>
+    <label>ピ逃げ可否</label>
     <select id="attendance">
       <option value="">指定なし</option>
-      <option value="ゆるめ">ゆるめ</option>
-      <option value="普通">普通</option>
+      <option value="いける">いける</option>
       <option value="厳しい">厳しい</option>
+      <option value="日による">日による</option>
+      <option value="不明">不明</option>
     </select>
 
     <label class="range-title">
       <span>試験割合</span>
       <span class="range-value" id="testText">0%〜100%</span>
     </label>
-    <div class="range-wrap">
-      <input type="range" id="minTest" min="0" max="100" step="10" value="0" oninput="syncRanges('test')">
-      <input type="range" id="maxTest" min="0" max="100" step="10" value="100" oninput="syncRanges('test')">
-    </div>
+    <div id="testSlider" class="slider"></div>
 
     <label class="range-title">
       <span>レポート割合</span>
       <span class="range-value" id="reportText">0%〜100%</span>
     </label>
-    <div class="range-wrap">
-      <input type="range" id="minReport" min="0" max="100" step="10" value="0" oninput="syncRanges('report')">
-      <input type="range" id="maxReport" min="0" max="100" step="10" value="100" oninput="syncRanges('report')">
-    </div>
+    <div id="reportSlider" class="slider"></div>
 
     <button onclick="goResults()">検索する</button>
     <button class="reset" onclick="resetForm()">条件をリセット</button>
 
     <div class="note">
-      例：試験なしがいい場合は「試験割合 0%〜0%」にすると検索できます。
+      例：試験なしがいい場合は「試験割合 0%〜0%」で検索できます。
     </div>
 
   </div>
-
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+
 <script>
-function syncRanges(type){
-  const min = document.getElementById("min" + capitalize(type));
-  const max = document.getElementById("max" + capitalize(type));
+const testSlider = document.getElementById("testSlider");
+const reportSlider = document.getElementById("reportSlider");
 
-  let minVal = Number(min.value);
-  let maxVal = Number(max.value);
+noUiSlider.create(testSlider,{
+  start:[0,100],
+  connect:true,
+  step:10,
+  range:{min:0,max:100}
+});
 
-  if(minVal > maxVal){
-    if(event.target.id.startsWith("min")){
-      max.value = minVal;
-      maxVal = minVal;
-    }else{
-      min.value = maxVal;
-      minVal = maxVal;
-    }
-  }
+noUiSlider.create(reportSlider,{
+  start:[0,100],
+  connect:true,
+  step:10,
+  range:{min:0,max:100}
+});
 
-  document.getElementById(type + "Text").textContent =
-    minVal + "%〜" + maxVal + "%";
-}
+testSlider.noUiSlider.on("update", values=>{
+  document.getElementById("testText").textContent =
+    Math.round(values[0]) + "%〜" + Math.round(values[1]) + "%";
+});
 
-function capitalize(str){
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+reportSlider.noUiSlider.on("update", values=>{
+  document.getElementById("reportText").textContent =
+    Math.round(values[0]) + "%〜" + Math.round(values[1]) + "%";
+});
 
 function goResults(){
   const keyword = encodeURIComponent(document.getElementById("keyword").value.trim());
   const attendance = encodeURIComponent(document.getElementById("attendance").value);
 
-  const minTest = document.getElementById("minTest").value;
-  const maxTest = document.getElementById("maxTest").value;
-  const minReport = document.getElementById("minReport").value;
-  const maxReport = document.getElementById("maxReport").value;
+  const testValues = testSlider.noUiSlider.get();
+  const reportValues = reportSlider.noUiSlider.get();
+
+  const minTest = Math.round(testValues[0]);
+  const maxTest = Math.round(testValues[1]);
+  const minReport = Math.round(reportValues[0]);
+  const maxReport = Math.round(reportValues[1]);
 
   location.href =
     `results.html?keyword=${keyword}&attendance=${attendance}&minTest=${minTest}&maxTest=${maxTest}&minReport=${minReport}&maxReport=${maxReport}`;
@@ -239,18 +230,9 @@ function goResults(){
 function resetForm(){
   document.getElementById("keyword").value = "";
   document.getElementById("attendance").value = "";
-
-  document.getElementById("minTest").value = 0;
-  document.getElementById("maxTest").value = 100;
-  document.getElementById("minReport").value = 0;
-  document.getElementById("maxReport").value = 100;
-
-  syncRanges("test");
-  syncRanges("report");
+  testSlider.noUiSlider.set([0,100]);
+  reportSlider.noUiSlider.set([0,100]);
 }
-
-syncRanges("test");
-syncRanges("report");
 </script>
 
 </body>
