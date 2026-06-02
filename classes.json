@@ -3,75 +3,44 @@
     "id": 1,
     "name": "アルゴリズム",
     "teacher": "森本 裕介",
-    "credits": 2,
-    "required": true,
-    "pcRequired": true,
     "evaluation": {
       "レポート": 60,
       "演習": 40
     },
-    "tags": [
-      "Python",
-      "アルゴリズム",
-      "プログラミング"
-    ],
+    "tags": ["Python", "アルゴリズム", "プログラミング"],
     "description": "Pythonを用いてアルゴリズムの設計・実装・計算量について学ぶ。"
   },
   {
     "id": 2,
     "name": "微分方程式2",
     "teacher": "由良 文孝",
-    "credits": 2,
-    "required": true,
-    "pcRequired": true,
     "evaluation": {
       "試験": 60,
       "レポート": 30,
       "小テスト": 10
     },
-    "tags": [
-      "数学",
-      "微分方程式"
-    ],
+    "tags": ["数学", "微分方程式", "試験あり"],
     "description": "線形常微分方程式とその応用について学ぶ。"
   },
   {
     "id": 3,
     "name": "数理工学実験1",
     "teacher": "櫻井 建成・森 竜樹",
-    "credits": 2,
-    "required": true,
-    "pcRequired": true,
     "evaluation": {
       "レポート": 100
     },
-    "tags": [
-      "Mathematica",
-      "実験",
-      "物理",
-      "電気回路",
-      "振り子"
-    ],
+    "tags": ["Mathematica", "実験", "物理", "電気回路", "振り子"],
     "description": "Mathematicaと物理実験を通してデータ解析やモデル化を学ぶ。"
   },
   {
     "id": 4,
     "name": "応用代数",
     "teacher": "吉田 純",
-    "credits": 2,
-    "required": false,
-    "pcRequired": true,
     "evaluation": {
       "試験": 50,
       "レポート": 50
     },
-    "tags": [
-      "数学",
-      "群",
-      "環",
-      "体",
-      "RSA暗号"
-    ],
+    "tags": ["数学", "群", "環", "体", "RSA暗号"],
     "description": "群・環・体の理論とRSA暗号への応用を学ぶ。"
   }
 ]
