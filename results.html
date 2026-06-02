@@ -62,13 +62,6 @@ header p{
   border:1px solid #e5e7eb;
 }
 
-.course-top{
-  display:flex;
-  justify-content:space-between;
-  gap:16px;
-  align-items:flex-start;
-}
-
 .course-title{
   font-size:26px;
   font-weight:800;
@@ -78,17 +71,6 @@ header p{
 .teacher{
   color:#475569;
   margin:8px 0;
-}
-
-.badge{
-  display:inline-block;
-  background:#e6f0ff;
-  color:#0057d9;
-  padding:5px 9px;
-  border-radius:6px;
-  font-size:13px;
-  font-weight:700;
-  margin:3px;
 }
 
 .tags{
@@ -133,9 +115,36 @@ header p{
   border-radius:999px;
 }
 
-.description{
-  line-height:1.7;
-  color:#334155;
+.attendance-box{
+  margin-top:12px;
+}
+
+.attendance-badge{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:800;
+  font-size:14px;
+}
+
+.attendance-ok{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.attendance-hard{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.attendance-depends{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.attendance-unknown{
+  background:#e5e7eb;
+  color:#374151;
 }
 
 .review-head{
@@ -210,14 +219,19 @@ header p{
   margin-top:3px;
 }
 
-.review-tags span{
-  display:inline-block;
+.review-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+
+.review-item{
   background:#f1f5f9;
   border:1px solid #dbe2ea;
-  padding:4px 8px;
-  border-radius:6px;
-  margin:3px;
-  font-size:12px;
+  padding:8px 10px;
+  border-radius:8px;
+  font-size:13px;
 }
 
 .stars{
@@ -226,7 +240,7 @@ header p{
 }
 
 .comment{
-  margin-top:10px;
+  margin-top:12px;
   line-height:1.7;
 }
 
@@ -242,11 +256,11 @@ header p{
     grid-template-columns:1fr;
   }
 
-  .course-top{
-    display:block;
+  .review-card{
+    grid-template-columns:1fr;
   }
 
-  .review-card{
+  .review-grid{
     grid-template-columns:1fr;
   }
 }
@@ -298,24 +312,34 @@ function stars(n){
 }
 
 function getEvaluation(c){
-  if(c.evaluation) return c.evaluation;
-
-  return {
-    "試験": c.test || 0,
-    "レポート": c.report || 0,
-    "課題": c.assignment || c.task || 0,
-    "その他": c.other || 0
-  };
+  return c.evaluation || {};
 }
 
-function getEvalValue(c, names){
+function getEvalValue(c,names){
   const ev = getEvaluation(c);
-
   for(const name of names){
     if(ev[name] !== undefined) return Number(ev[name]);
   }
-
   return 0;
+}
+
+function attendanceClass(value){
+  if(value === "いける") return "attendance-ok";
+  if(value === "厳しい") return "attendance-hard";
+  if(value === "日による") return "attendance-depends";
+  return "attendance-unknown";
+}
+
+function mostCommonAttendance(classReviews){
+  if(classReviews.length === 0) return "不明";
+
+  const count = {};
+  classReviews.forEach(r=>{
+    const key = r.attendance || "不明";
+    count[key] = (count[key] || 0) + 1;
+  });
+
+  return Object.entries(count).sort((a,b)=>b[1]-a[1])[0][0];
 }
 
 function searchClasses(){
@@ -329,14 +353,13 @@ function searchClasses(){
   const minReport = Number(params.get("minReport") || 0);
   const maxReport = Number(params.get("maxReport") || 100);
 
-  const results = classes.filter(c => {
-    const classReviews = reviews.filter(r => r.classId === c.id);
+  const results = classes.filter(c=>{
+    const classReviews = reviews.filter(r=>r.classId === c.id);
 
     const text = [
       c.name,
       c.teacher,
       c.description,
-      c.memo,
       ...(c.tags || [])
     ].join("");
 
@@ -345,7 +368,7 @@ function searchClasses(){
 
     const attendanceOK =
       attendance === "" ||
-      classReviews.some(r => r.attendance === attendance);
+      classReviews.some(r=>r.attendance === attendance);
 
     return (
       testRate >= minTest &&
@@ -373,11 +396,12 @@ function displayResults(results){
     return;
   }
 
-  results.forEach(c => {
-    const classReviews = reviews.filter(r => r.classId === c.id);
+  results.forEach(c=>{
+    const classReviews = reviews.filter(r=>r.classId === c.id);
     const ev = getEvaluation(c);
+    const attendance = mostCommonAttendance(classReviews);
 
-    const evaluationHtml = Object.entries(ev).map(([name,value]) => `
+    const evaluationHtml = Object.entries(ev).map(([name,value])=>`
       <div class="eval-row">
         <div>${name}</div>
         <div class="bar-bg">
@@ -387,7 +411,7 @@ function displayResults(results){
       </div>
     `).join("");
 
-    const reviewHtml = classReviews.map(r => `
+    const reviewHtml = classReviews.map(r=>`
       <div class="review-card">
         <div>
           <div class="avatar"></div>
@@ -399,21 +423,22 @@ function displayResults(results){
 
         <div>
           <div>
-            <strong>おすすめ度：</strong>
-            <span class="stars">${stars(r.recommend || 0)}</span>
-            ${r.recommend || 0}/5
+            <strong>ピ逃げ可否：</strong>
+            <span class="attendance-badge ${attendanceClass(r.attendance)}">
+              ${r.attendance || "不明"}
+            </span>
           </div>
 
-          <div class="review-tags">
-            <span>出席の厳しさ：${r.attendance || "不明"}</span>
-            <span>テスト難易度：${r.testDifficulty || "-"}</span>
-            <span>レポート難易度：${r.reportDifficulty || "-"}</span>
-            <span>レポート量：${r.reportAmount || "-"}</span>
-            <span>課題難易度：${r.assignmentDifficulty || "-"}</span>
-            <span>課題量：${r.assignmentAmount || "-"}</span>
+          <div class="review-grid">
+            <div class="review-item">テスト難易度：<span class="stars">${stars(r.testDifficulty)}</span></div>
+            <div class="review-item">レポート難易度：<span class="stars">${stars(r.reportDifficulty)}</span></div>
+            <div class="review-item">レポート量：<span class="stars">${stars(r.reportAmount)}</span></div>
+            <div class="review-item">課題難易度：<span class="stars">${stars(r.assignmentDifficulty)}</span></div>
+            <div class="review-item">課題量：<span class="stars">${stars(r.assignmentAmount)}</span></div>
           </div>
 
           <div class="comment">
+            <strong>先輩レビュー：</strong><br>
             ${r.comment || ""}
           </div>
         </div>
@@ -422,22 +447,11 @@ function displayResults(results){
 
     list.innerHTML += `
       <section class="card">
-
-        <div class="course-top">
-          <div>
-            <h2 class="course-title">${c.name}</h2>
-            <p class="teacher"><strong>先生：</strong>${c.teacher}</p>
-          </div>
-
-          <div>
-            <span class="badge">${c.credits || 2}単位</span>
-            <span class="badge">${c.required ? "必修" : "選択"}</span>
-            ${c.pcRequired ? `<span class="badge">PC必携</span>` : ""}
-          </div>
-        </div>
+        <h2 class="course-title">${c.name}</h2>
+        <p class="teacher"><strong>先生：</strong>${c.teacher}</p>
 
         <div class="tags">
-          ${(c.tags || []).map(t => `<span class="tag">${t}</span>`).join("")}
+          ${(c.tags || []).map(t=>`<span class="tag">${t}</span>`).join("")}
         </div>
 
         <div class="course-body">
@@ -447,8 +461,12 @@ function displayResults(results){
           </div>
 
           <div>
-            <h3>授業概要</h3>
-            <p class="description">${c.description || c.memo || ""}</p>
+            <h3>ピ逃げのしやすさ</h3>
+            <div class="attendance-box">
+              <span class="attendance-badge ${attendanceClass(attendance)}">
+                ${attendance}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -458,7 +476,6 @@ function displayResults(results){
         </div>
 
         ${reviewHtml || `<div class="empty">まだレビューがありません。</div>`}
-
       </section>
     `;
   });
