@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>楽単Search</title>
+<title>楽単Search｜検索結果</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -88,6 +88,7 @@ header p{
   border-radius:6px;
   font-size:13px;
   font-weight:700;
+  margin:3px;
 }
 
 .tags{
@@ -317,21 +318,16 @@ function getEvalValue(c, names){
   return 0;
 }
 
-function average(arr,key){
-  if(arr.length === 0) return 0;
-  return Math.round(
-    arr.reduce((sum,item)=>sum + Number(item[key] || 0),0) / arr.length
-  );
-}
-
 function searchClasses(){
   const params = new URLSearchParams(location.search);
 
   const keyword = params.get("keyword") || "";
   const attendance = params.get("attendance") || "";
 
+  const minTest = Number(params.get("minTest") || 0);
   const maxTest = Number(params.get("maxTest") || 100);
   const minReport = Number(params.get("minReport") || 0);
+  const maxReport = Number(params.get("maxReport") || 100);
 
   const results = classes.filter(c => {
     const classReviews = reviews.filter(r => r.classId === c.id);
@@ -352,8 +348,10 @@ function searchClasses(){
       classReviews.some(r => r.attendance === attendance);
 
     return (
+      testRate >= minTest &&
       testRate <= maxTest &&
       reportRate >= minReport &&
+      reportRate <= maxReport &&
       attendanceOK &&
       (keyword === "" || text.includes(keyword))
     );
