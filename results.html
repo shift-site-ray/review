@@ -4,112 +4,369 @@
 <meta charset="UTF-8">
 <title>楽単Search</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
+*{box-sizing:border-box}
+
 body{
-  font-family:sans-serif;
-  background:#f5f5f5;
   margin:0;
-  padding:20px;
+  font-family:"Segoe UI",sans-serif;
+  background:#f4f7fb;
+  color:#111827;
 }
+
+header{
+  background:linear-gradient(90deg,#003b8f,#0057d9);
+  color:white;
+  padding:22px 36px;
+}
+
+header h1{
+  margin:0;
+  font-size:28px;
+}
+
+header p{
+  margin:6px 0 0;
+  font-size:14px;
+}
+
 .container{
-  max-width:900px;
+  max-width:1000px;
   margin:auto;
+  padding:24px;
 }
+
+.back{
+  display:inline-block;
+  margin-bottom:18px;
+  color:#2563eb;
+  text-decoration:none;
+  font-weight:700;
+}
+
+.result-title{
+  background:white;
+  padding:18px 22px;
+  border-radius:14px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+  margin-bottom:20px;
+}
+
 .card{
   background:white;
-  padding:20px;
-  border-radius:14px;
-  margin-bottom:20px;
-  box-shadow:0 2px 8px #ddd;
+  padding:24px;
+  border-radius:16px;
+  margin-bottom:24px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+  border:1px solid #e5e7eb;
 }
+
+.course-top{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+}
+
+.course-title{
+  font-size:26px;
+  font-weight:800;
+  margin:0;
+}
+
+.teacher{
+  color:#475569;
+  margin:8px 0;
+}
+
+.badge{
+  display:inline-block;
+  background:#e6f0ff;
+  color:#0057d9;
+  padding:5px 9px;
+  border-radius:6px;
+  font-size:13px;
+  font-weight:700;
+}
+
+.tags{
+  margin:14px 0;
+}
+
 .tag{
   display:inline-block;
-  background:#e8f0ff;
-  padding:5px 8px;
+  background:#e9f1ff;
+  color:#1e40af;
+  padding:5px 9px;
   border-radius:6px;
-  margin:4px;
+  margin:4px 4px 4px 0;
+  font-size:13px;
 }
-.small{
-  color:#666;
+
+.course-body{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+  margin-top:16px;
 }
-a{
-  text-decoration:none;
-  color:#2563eb;
+
+.eval-row{
+  display:grid;
+  grid-template-columns:100px 1fr 50px;
+  align-items:center;
+  gap:10px;
+  margin:12px 0;
+}
+
+.bar-bg{
+  height:9px;
+  background:#e5e7eb;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.bar{
+  height:9px;
+  background:#2563eb;
+  border-radius:999px;
+}
+
+.description{
+  line-height:1.7;
+  color:#334155;
+}
+
+.review-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:22px;
+  border-top:1px solid #e5e7eb;
+  padding-top:18px;
+}
+
+.review-head h3{
+  margin:0;
+}
+
+.review-card{
+  display:grid;
+  grid-template-columns:90px 1fr;
+  gap:16px;
+  padding:16px;
+  margin-top:14px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  background:#fbfdff;
+}
+
+.avatar{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:#d8e0e8;
+  margin:0 auto;
+  position:relative;
+}
+
+.avatar:before{
+  content:"";
+  position:absolute;
+  top:10px;
+  left:18px;
+  width:20px;
+  height:20px;
+  background:#71808f;
+  border-radius:50%;
+}
+
+.avatar:after{
+  content:"";
+  position:absolute;
+  bottom:7px;
+  left:10px;
+  width:36px;
+  height:21px;
+  background:#71808f;
+  border-radius:50% 50% 40% 40%;
+}
+
+.year{
+  text-align:center;
+  font-size:12px;
+  margin-top:7px;
+  color:#475569;
+}
+
+.year span{
+  display:inline-block;
+  background:#0057d9;
+  color:white;
+  padding:2px 9px;
+  border-radius:5px;
+  font-weight:700;
+  margin-top:3px;
+}
+
+.review-tags span{
+  display:inline-block;
+  background:#f1f5f9;
+  border:1px solid #dbe2ea;
+  padding:4px 8px;
+  border-radius:6px;
+  margin:3px;
+  font-size:12px;
+}
+
+.stars{
+  color:#f59e0b;
+  font-weight:800;
+}
+
+.comment{
+  margin-top:10px;
+  line-height:1.7;
+}
+
+.empty{
+  color:#64748b;
+  background:#f8fafc;
+  padding:14px;
+  border-radius:10px;
+}
+
+@media(max-width:800px){
+  .course-body{
+    grid-template-columns:1fr;
+  }
+
+  .course-top{
+    display:block;
+  }
+
+  .review-card{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
 
 <body>
 
+<header>
+  <h1>楽単Search</h1>
+  <p>先輩レビューから、自分に合う授業を探そう</p>
+</header>
+
 <div class="container">
 
-<a href="index.html">← 検索画面に戻る</a>
+<a class="back" href="index.html">← 検索画面に戻る</a>
 
-<h1>検索結果</h1>
+<div class="result-title">
+  <h2 id="resultCount">検索結果</h2>
+</div>
 
 <div id="resultList">読み込み中...</div>
 
 </div>
 
 <script>
-
 let classes = [];
 let reviews = [];
 
 async function loadData(){
+  try{
+    const classResponse = await fetch("classes.json");
+    classes = await classResponse.json();
 
-  const classResponse = await fetch("classes.json");
-  classes = await classResponse.json();
+    const reviewResponse = await fetch("reviews.json");
+    reviews = await reviewResponse.json();
 
-  const reviewResponse = await fetch("reviews.json");
-  reviews = await reviewResponse.json();
-
-  searchClasses();
+    searchClasses();
+  }catch(error){
+    document.getElementById("resultList").innerHTML =
+      `<div class="card">データの読み込みに失敗しました。classes.json / reviews.json を確認してください。</div>`;
+    console.error(error);
+  }
 }
 
 function stars(n){
+  n = Number(n || 0);
   return "★".repeat(n) + "☆".repeat(5-n);
 }
 
+function getEvaluation(c){
+  if(c.evaluation) return c.evaluation;
+
+  return {
+    "試験": c.test || 0,
+    "レポート": c.report || 0,
+    "課題": c.assignment || c.task || 0,
+    "その他": c.other || 0
+  };
+}
+
+function getEvalValue(c, names){
+  const ev = getEvaluation(c);
+
+  for(const name of names){
+    if(ev[name] !== undefined) return Number(ev[name]);
+  }
+
+  return 0;
+}
+
 function average(arr,key){
-
   if(arr.length === 0) return 0;
-
-  return (
-    arr.reduce((sum,item)=>sum + item[key],0)
-    / arr.length
-  ).toFixed(1);
+  return Math.round(
+    arr.reduce((sum,item)=>sum + Number(item[key] || 0),0) / arr.length
+  );
 }
 
 function searchClasses(){
-
   const params = new URLSearchParams(location.search);
 
   const keyword = params.get("keyword") || "";
   const attendance = params.get("attendance") || "";
+
   const maxTest = Number(params.get("maxTest") || 100);
   const minReport = Number(params.get("minReport") || 0);
 
   const results = classes.filter(c => {
+    const classReviews = reviews.filter(r => r.classId === c.id);
 
-    const text =
-  　　c.name + c.teacher + c.memo + (c.tags || []).join("");
-      
+    const text = [
+      c.name,
+      c.teacher,
+      c.description,
+      c.memo,
+      ...(c.tags || [])
+    ].join("");
+
+    const testRate = getEvalValue(c,["試験","テスト"]);
+    const reportRate = getEvalValue(c,["レポート"]);
+
+    const attendanceOK =
+      attendance === "" ||
+      classReviews.some(r => r.attendance === attendance);
 
     return (
-      c.test <= maxTest &&
-      c.report >= minReport &&
+      testRate <= maxTest &&
+      reportRate >= minReport &&
+      attendanceOK &&
       (keyword === "" || text.includes(keyword))
     );
   });
 
-  displayResults(results,attendance);
+  displayResults(results);
 }
 
-function displayResults(results,attendanceFilter){
-
+function displayResults(results){
   const list = document.getElementById("resultList");
+  const count = document.getElementById("resultCount");
 
+  count.textContent = `検索結果：${results.length}件`;
   list.innerHTML = "";
 
   if(results.length === 0){
@@ -119,65 +376,97 @@ function displayResults(results,attendanceFilter){
   }
 
   results.forEach(c => {
+    const classReviews = reviews.filter(r => r.classId === c.id);
+    const ev = getEvaluation(c);
 
-    const classReviews =
-      reviews.filter(r => r.classId === c.id);
+    const evaluationHtml = Object.entries(ev).map(([name,value]) => `
+      <div class="eval-row">
+        <div>${name}</div>
+        <div class="bar-bg">
+          <div class="bar" style="width:${value}%"></div>
+        </div>
+        <div>${value}%</div>
+      </div>
+    `).join("");
 
-    if(
-      attendanceFilter &&
-      !classReviews.some(r => r.attendance === attendanceFilter)
-    ){
-      return;
-    }
+    const reviewHtml = classReviews.map(r => `
+      <div class="review-card">
+        <div>
+          <div class="avatar"></div>
+          <div class="year">
+            学籍番号上二桁<br>
+            <span>${r.studentYear || "24"}</span>
+          </div>
+        </div>
 
-    const comments =
-      classReviews.map(r => `<li>${r.comment}</li>`).join("");
+        <div>
+          <div>
+            <strong>おすすめ度：</strong>
+            <span class="stars">${stars(r.recommend || 0)}</span>
+            ${r.recommend || 0}/5
+          </div>
+
+          <div class="review-tags">
+            <span>出席の厳しさ：${r.attendance || "不明"}</span>
+            <span>テスト難易度：${r.testDifficulty || "-"}</span>
+            <span>レポート難易度：${r.reportDifficulty || "-"}</span>
+            <span>レポート量：${r.reportAmount || "-"}</span>
+            <span>課題難易度：${r.assignmentDifficulty || "-"}</span>
+            <span>課題量：${r.assignmentAmount || "-"}</span>
+          </div>
+
+          <div class="comment">
+            ${r.comment || ""}
+          </div>
+        </div>
+      </div>
+    `).join("");
 
     list.innerHTML += `
-      <div class="card">
+      <section class="card">
 
-        <h2>${c.name}</h2>
+        <div class="course-top">
+          <div>
+            <h2 class="course-title">${c.name}</h2>
+            <p class="teacher"><strong>先生：</strong>${c.teacher}</p>
+          </div>
 
-        <p><strong>先生：</strong>${c.teacher}</p>
+          <div>
+            <span class="badge">${c.credits || 2}単位</span>
+            <span class="badge">${c.required ? "必修" : "選択"}</span>
+            ${c.pcRequired ? `<span class="badge">PC必携</span>` : ""}
+          </div>
+        </div>
 
-        <span class="tag">テスト ${c.test}%</span>
-        <span class="tag">レポート ${c.report}%</span>
+        <div class="tags">
+          ${(c.tags || []).map(t => `<span class="tag">${t}</span>`).join("")}
+        </div>
 
-        <p>${c.memo}</p>
+        <div class="course-body">
+          <div>
+            <h3>評価方法の割合</h3>
+            ${evaluationHtml}
+          </div>
 
-        <h3>先輩レビュー</h3>
+          <div>
+            <h3>授業概要</h3>
+            <p class="description">${c.description || c.memo || ""}</p>
+          </div>
+        </div>
 
-        <p><strong>出席の厳しさ：</strong>
-        ${classReviews[0]?.attendance || "不明"}</p>
+        <div class="review-head">
+          <h3>先輩レビュー</h3>
+          <span>レビュー数：${classReviews.length}件</span>
+        </div>
 
-        <p><strong>テスト難易度：</strong>
-        ${stars(Math.round(average(classReviews,"testDifficulty")))}</p>
+        ${reviewHtml || `<div class="empty">まだレビューがありません。</div>`}
 
-        <p><strong>レポート難易度：</strong>
-        ${stars(Math.round(average(classReviews,"reportDifficulty")))}</p>
-
-        <p><strong>レポート量：</strong>
-        ${stars(Math.round(average(classReviews,"reportAmount")))}</p>
-
-        <p><strong>課題難易度：</strong>
-        ${stars(Math.round(average(classReviews,"assignmentDifficulty")))}</p>
-
-        <p><strong>課題量：</strong>
-        ${stars(Math.round(average(classReviews,"assignmentAmount")))}</p>
-
-        <h3>先輩コメント</h3>
-
-        <ul>
-          ${comments}
-        </ul>
-
-      </div>
+      </section>
     `;
   });
 }
 
 loadData();
-
 </script>
 
 </body>
