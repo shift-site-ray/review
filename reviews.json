@@ -111,13 +111,13 @@
     "id": 10,
     "classId": 13,
     "studentYear": "24",
-    "attendance": null,
+    "attendance": "厳しい",
     "testDifficulty": null,
     "reportDifficulty": null,
     "reportAmount": null,
     "assignmentDifficulty": null,
     "assignmentAmount": null,
-    "comment": "毎授業目標を決めてやるといい。でかい完成品を一年巻かけてつくる。半のやる気によって出来栄えはめっちゃ変わる"
+    "comment": "毎授業目標を決めてやるといい。でかい完成品を一年間かけてつくる。班のやる気によって出来栄えはめっちゃ変わる"
   },
   {
     "id": 11,
