@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>楽単Search｜検索結果</title>
+<title>最適授業サーチ｜検索結果</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -270,8 +270,8 @@ header p{
 <body>
 
 <header>
-  <h1>楽単Search</h1>
-  <p>先輩レビューから、自分に合う授業を探そう</p>
+  <h1>最適授業サーチ</h1>
+  <p>先輩レビューから、自分に合った授業選びをサポート</p>
 </header>
 
 <div class="container">
@@ -307,6 +307,10 @@ async function loadData(){
 }
 
 function stars(n){
+  if(n === null || n === undefined || n === ""){
+    return "未入力";
+  }
+
   n = Number(n || 0);
   return "★".repeat(n) + "☆".repeat(5-n);
 }
@@ -324,9 +328,9 @@ function getEvalValue(c,names){
 }
 
 function attendanceClass(value){
-  if(value === "いける") return "attendance-ok";
+  if(value === "厳しくない") return "attendance-ok";
   if(value === "厳しい") return "attendance-hard";
-  if(value === "日による") return "attendance-depends";
+  if(value === "普通") return "attendance-depends";
   return "attendance-unknown";
 }
 
@@ -423,7 +427,7 @@ function displayResults(results){
 
         <div>
           <div>
-            <strong>ピ逃げ可否：</strong>
+            <strong>出席の厳しさ：</strong>
             <span class="attendance-badge ${attendanceClass(r.attendance)}">
               ${r.attendance || "不明"}
             </span>
@@ -461,7 +465,7 @@ function displayResults(results){
           </div>
 
           <div>
-            <h3>ピ逃げのしやすさ</h3>
+            <h3>出席の厳しさ</h3>
             <div class="attendance-box">
               <span class="attendance-badge ${attendanceClass(attendance)}">
                 ${attendance}
