@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>楽単Search</title>
+<title>最適授業サーチ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
@@ -140,7 +140,7 @@ button:hover{
 <body>
 
 <header>
-  <h1>楽単Search</h1>
+  <h1>最適授業サーチ</h1>
   <p>希望条件から、先輩レビュー付きの授業を検索</p>
 </header>
 
@@ -151,13 +151,12 @@ button:hover{
     <input id="keyword" placeholder="例：Python、数学、レポート、吉田">
 
     <label>出席の厳しさ</label>
-
-　　<select name="attendance">
- 　　 <option value="">指定なし</option>
- 　　 <option value="厳しい">厳しい</option>
- 　　 <option value="普通">普通</option>
-  　　<option value="厳しくない">厳しくない</option>
-　　</select>
+    <select id="attendance" name="attendance">
+      <option value="">指定なし</option>
+      <option value="厳しい">厳しい</option>
+      <option value="普通">普通</option>
+      <option value="厳しくない">厳しくない</option>
+    </select>
 
     <label class="range-title">
       <span>試験割合</span>
