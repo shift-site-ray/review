@@ -32,7 +32,7 @@ header p{
 }
 
 .container{
-  max-width:1000px;
+  max-width:1050px;
   margin:auto;
   padding:24px;
 }
@@ -50,7 +50,82 @@ header p{
   padding:18px 22px;
   border-radius:14px;
   box-shadow:0 4px 14px rgba(0,0,0,.08);
-  margin-bottom:20px;
+  margin-bottom:18px;
+}
+
+.course-slider{
+  display:flex;
+  gap:16px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  padding:8px 4px 18px;
+  margin-bottom:6px;
+  scrollbar-width:thin;
+}
+
+.course-mini-card{
+  min-width:260px;
+  max-width:260px;
+  background:white;
+  border:1px solid #dbe2ea;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+  scroll-snap-align:center;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.course-mini-card:hover{
+  transform:translateY(-2px);
+}
+
+.course-mini-card.active{
+  border:2px solid #2563eb;
+  box-shadow:0 6px 18px rgba(37,99,235,.20);
+}
+
+.mini-title{
+  font-weight:800;
+  font-size:18px;
+  margin-bottom:6px;
+}
+
+.mini-teacher{
+  color:#475569;
+  font-size:13px;
+  margin-bottom:10px;
+}
+
+.mini-tags span{
+  display:inline-block;
+  background:#e9f1ff;
+  color:#1e40af;
+  padding:4px 7px;
+  border-radius:6px;
+  margin:3px 3px 0 0;
+  font-size:11px;
+}
+
+.indicator{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin:6px 0 22px;
+}
+
+.indicator-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#cbd5e1;
+  transition:.2s;
+}
+
+.indicator-dot.active{
+  width:24px;
+  border-radius:999px;
+  background:#2563eb;
 }
 
 .card{
@@ -263,6 +338,11 @@ header p{
   .review-grid{
     grid-template-columns:1fr;
   }
+
+  .course-mini-card{
+    min-width:230px;
+    max-width:230px;
+  }
 }
 </style>
 </head>
@@ -282,13 +362,17 @@ header p{
   <h2 id="resultCount">検索結果</h2>
 </div>
 
-<div id="resultList">読み込み中...</div>
+<div id="courseSlider" class="course-slider">読み込み中...</div>
+<div id="indicator" class="indicator"></div>
+<div id="courseDetail"></div>
 
 </div>
 
 <script>
 let classes = [];
 let reviews = [];
+let currentResults = [];
+let selectedIndex = 0;
 
 async function loadData(){
   try{
@@ -300,7 +384,8 @@ async function loadData(){
 
     searchClasses();
   }catch(error){
-    document.getElementById("resultList").innerHTML =
+    document.getElementById("courseSlider").innerHTML = "";
+    document.getElementById("courseDetail").innerHTML =
       `<div class="card">データの読み込みに失敗しました。classes.json / reviews.json を確認してください。</div>`;
     console.error(error);
   }
@@ -310,7 +395,6 @@ function stars(n){
   if(n === null || n === undefined || n === ""){
     return "未入力";
   }
-
   n = Number(n || 0);
   return "★".repeat(n) + "☆".repeat(5-n);
 }
@@ -336,13 +420,11 @@ function attendanceClass(value){
 
 function mostCommonAttendance(classReviews){
   if(classReviews.length === 0) return "不明";
-
   const count = {};
   classReviews.forEach(r=>{
     const key = r.attendance || "不明";
     count[key] = (count[key] || 0) + 1;
   });
-
   return Object.entries(count).sort((a,b)=>b[1]-a[1])[0][0];
 }
 
@@ -388,101 +470,163 @@ function searchClasses(){
 }
 
 function displayResults(results){
-  const list = document.getElementById("resultList");
-  const count = document.getElementById("resultCount");
+  currentResults = results;
+  selectedIndex = 0;
 
-  count.textContent = `検索結果：${results.length}件`;
-  list.innerHTML = "";
+  document.getElementById("resultCount").textContent =
+    `検索結果：${results.length}件`;
+
+  const slider = document.getElementById("courseSlider");
+  const indicator = document.getElementById("indicator");
+  const detail = document.getElementById("courseDetail");
+
+  slider.innerHTML = "";
+  indicator.innerHTML = "";
+  detail.innerHTML = "";
 
   if(results.length === 0){
-    list.innerHTML =
-      `<div class="card">条件に合う授業が見つかりませんでした。</div>`;
+    slider.style.display = "none";
+    indicator.style.display = "none";
+    detail.innerHTML = `<div class="card">条件に合う授業が見つかりませんでした。</div>`;
     return;
   }
 
-  results.forEach(c=>{
+  slider.style.display = "flex";
+  indicator.style.display = "flex";
+
+  results.forEach((c,index)=>{
     const classReviews = reviews.filter(r=>r.classId === c.id);
-    const ev = getEvaluation(c);
     const attendance = mostCommonAttendance(classReviews);
 
-    const evaluationHtml = Object.entries(ev).map(([name,value])=>`
-      <div class="eval-row">
-        <div>${name}</div>
-        <div class="bar-bg">
-          <div class="bar" style="width:${value}%"></div>
-        </div>
-        <div>${value}%</div>
+    const mini = document.createElement("div");
+    mini.className = "course-mini-card" + (index === 0 ? " active" : "");
+    mini.innerHTML = `
+      <div class="mini-title">${c.name}</div>
+      <div class="mini-teacher">${c.teacher}</div>
+      <div>
+        <span class="attendance-badge ${attendanceClass(attendance)}">${attendance}</span>
       </div>
-    `).join("");
+      <div class="mini-tags">
+        ${(c.tags || []).slice(0,3).map(t=>`<span>${t}</span>`).join("")}
+      </div>
+    `;
 
-    const reviewHtml = classReviews.map(r=>`
-      <div class="review-card">
+    mini.addEventListener("click",()=>{
+      selectCourse(index);
+      mini.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
+    });
+
+    slider.appendChild(mini);
+
+    const dot = document.createElement("div");
+    dot.className = "indicator-dot" + (index === 0 ? " active" : "");
+    dot.addEventListener("click",()=>{
+      selectCourse(index);
+      slider.children[index].scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
+    });
+    indicator.appendChild(dot);
+  });
+
+  renderDetail(0);
+}
+
+function selectCourse(index){
+  selectedIndex = index;
+
+  document.querySelectorAll(".course-mini-card").forEach((card,i)=>{
+    card.classList.toggle("active", i === index);
+  });
+
+  document.querySelectorAll(".indicator-dot").forEach((dot,i)=>{
+    dot.classList.toggle("active", i === index);
+  });
+
+  renderDetail(index);
+}
+
+function renderDetail(index){
+  const c = currentResults[index];
+  const classReviews = reviews.filter(r=>r.classId === c.id);
+  const ev = getEvaluation(c);
+  const attendance = mostCommonAttendance(classReviews);
+
+  const evaluationHtml = Object.entries(ev).map(([name,value])=>`
+    <div class="eval-row">
+      <div>${name}</div>
+      <div class="bar-bg">
+        <div class="bar" style="width:${value}%"></div>
+      </div>
+      <div>${value}%</div>
+    </div>
+  `).join("");
+
+  const reviewHtml = classReviews.map(r=>`
+    <div class="review-card">
+      <div>
+        <div class="avatar"></div>
+        <div class="year">
+          学籍番号上二桁<br>
+          <span>${r.studentYear || "24"}</span>
+        </div>
+      </div>
+
+      <div>
         <div>
-          <div class="avatar"></div>
-          <div class="year">
-            学籍番号上二桁<br>
-            <span>${r.studentYear || "24"}</span>
-          </div>
+          <strong>出席の厳しさ：</strong>
+          <span class="attendance-badge ${attendanceClass(r.attendance)}">
+            ${r.attendance || "不明"}
+          </span>
+        </div>
+
+        <div class="review-grid">
+          <div class="review-item">テスト難易度：<span class="stars">${stars(r.testDifficulty)}</span></div>
+          <div class="review-item">レポート難易度：<span class="stars">${stars(r.reportDifficulty)}</span></div>
+          <div class="review-item">レポート量：<span class="stars">${stars(r.reportAmount)}</span></div>
+          <div class="review-item">課題難易度：<span class="stars">${stars(r.assignmentDifficulty)}</span></div>
+          <div class="review-item">課題量：<span class="stars">${stars(r.assignmentAmount)}</span></div>
+        </div>
+
+        <div class="comment">
+          <strong>先輩レビュー：</strong><br>
+          ${r.comment || ""}
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  document.getElementById("courseDetail").innerHTML = `
+    <section class="card">
+      <h2 class="course-title">${c.name}</h2>
+      <p class="teacher"><strong>先生：</strong>${c.teacher}</p>
+
+      <div class="tags">
+        ${(c.tags || []).map(t=>`<span class="tag">${t}</span>`).join("")}
+      </div>
+
+      <div class="course-body">
+        <div>
+          <h3>評価方法の割合</h3>
+          ${evaluationHtml}
         </div>
 
         <div>
-          <div>
-            <strong>出席の厳しさ：</strong>
-            <span class="attendance-badge ${attendanceClass(r.attendance)}">
-              ${r.attendance || "不明"}
+          <h3>出席の厳しさ</h3>
+          <div class="attendance-box">
+            <span class="attendance-badge ${attendanceClass(attendance)}">
+              ${attendance}
             </span>
           </div>
-
-          <div class="review-grid">
-            <div class="review-item">テスト難易度：<span class="stars">${stars(r.testDifficulty)}</span></div>
-            <div class="review-item">レポート難易度：<span class="stars">${stars(r.reportDifficulty)}</span></div>
-            <div class="review-item">レポート量：<span class="stars">${stars(r.reportAmount)}</span></div>
-            <div class="review-item">課題難易度：<span class="stars">${stars(r.assignmentDifficulty)}</span></div>
-            <div class="review-item">課題量：<span class="stars">${stars(r.assignmentAmount)}</span></div>
-          </div>
-
-          <div class="comment">
-            <strong>先輩レビュー：</strong><br>
-            ${r.comment || ""}
-          </div>
         </div>
       </div>
-    `).join("");
 
-    list.innerHTML += `
-      <section class="card">
-        <h2 class="course-title">${c.name}</h2>
-        <p class="teacher"><strong>先生：</strong>${c.teacher}</p>
+      <div class="review-head">
+        <h3>先輩レビュー</h3>
+        <span>レビュー数：${classReviews.length}件</span>
+      </div>
 
-        <div class="tags">
-          ${(c.tags || []).map(t=>`<span class="tag">${t}</span>`).join("")}
-        </div>
-
-        <div class="course-body">
-          <div>
-            <h3>評価方法の割合</h3>
-            ${evaluationHtml}
-          </div>
-
-          <div>
-            <h3>出席の厳しさ</h3>
-            <div class="attendance-box">
-              <span class="attendance-badge ${attendanceClass(attendance)}">
-                ${attendance}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div class="review-head">
-          <h3>先輩レビュー</h3>
-          <span>レビュー数：${classReviews.length}件</span>
-        </div>
-
-        ${reviewHtml || `<div class="empty">まだレビューがありません。</div>`}
-      </section>
-    `;
-  });
+      ${reviewHtml || `<div class="empty">まだレビューがありません。</div>`}
+    </section>
+  `;
 }
 
 loadData();
