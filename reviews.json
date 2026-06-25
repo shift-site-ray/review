@@ -215,51 +215,56 @@
     "assignmentAmount": 3,
     "comment": "課題はたぶんあった気がするけどあんま記憶になくてごめんなさい。微分方程式2は正直出席しなくてもいけなくはないと思うけど講義資料も教科書も何もないやつで普段の授業ノートしかあてにするものがないから授業ちゃんと出てノート書くなり黒板の写真撮るなりしないとテストが厳しいかなと思います。"
   },
-　{
-  　"classId": 4,
+  {
+    "id": 19,
+    "classId": 4,
     "studentYear": "24",
     "attendance": "厳しくない",
     "testDifficulty": 3,
-    "reportDifficulty": "",
-    "reportAmount": "",
+    "reportDifficulty": null,
+    "reportAmount": null,
     "assignmentDifficulty": 1,
     "assignmentAmount": 2,
     "comment": "最後の授業とテストだけ出席してれば単位取れる"
   },
   {
+    "id": 20,
     "classId": 8,
     "studentYear": "24",
     "attendance": "厳しくない",
     "testDifficulty": 4,
-    "reportDifficulty": "",
-    "reportAmount": "",
+    "reportDifficulty": null,
+    "reportAmount": null,
     "assignmentDifficulty": 4,
     "assignmentAmount": 3,
     "comment": "問題解決型じゃ無いので本当に退屈。"
   },
   {
+    "id": 21,
     "classId": 10,
     "studentYear": "24",
-    "attendance": "不明",
-    "testDifficulty": "",
+    "attendance": "普通",
+    "testDifficulty": null,
     "reportDifficulty": 1,
     "reportAmount": 3,
-    "assignmentDifficulty": "",
-    "assignmentAmount": "",
+    "assignmentDifficulty": null,
+    "assignmentAmount": null,
     "comment": "まじで楽さ一位、出席とかの管理もないからガチで楽"
   },
   {
+    "id": 22,
     "classId": 13,
     "studentYear": "24",
     "attendance": "厳しい",
-    "testDifficulty": "",
+    "testDifficulty": null,
     "reportDifficulty": 5,
-    "reportAmount": "",
+    "reportAmount": null,
     "assignmentDifficulty": 5,
     "assignmentAmount": 5,
     "comment": "まじでやめた方がいい"
   },
   {
+    "id": 23,
     "classId": 2,
     "studentYear": "24",
     "attendance": "普通",
@@ -271,10 +276,11 @@
     "comment": "単位落とす方が難しい"
   },
   {
+    "id": 24,
     "classId": 7,
     "studentYear": "24",
     "attendance": "厳しくない",
-    "testDifficulty": "",
+    "testDifficulty": null,
     "reportDifficulty": 2,
     "reportAmount": 3,
     "assignmentDifficulty": 3,
@@ -282,6 +288,7 @@
     "comment": ""
   },
   {
+    "id": 25,
     "classId": 4,
     "studentYear": "24",
     "attendance": "厳しくない",
@@ -293,6 +300,7 @@
     "comment": "内容は難解だが、課題テスト共に難易度は低い前日だけでも間に合うレベル"
   },
   {
+    "id": 26,
     "classId": 12,
     "studentYear": "24",
     "attendance": "普通",
@@ -304,10 +312,11 @@
     "comment": "オンラインの授業だけど、日によって出席確認があるのとグループワークが多いので出席した方が評価は高くなると思う。あと、2回くらい対面で授業をした。"
   },
   {
+    "id": 27,
     "classId": 11,
     "studentYear": "24",
     "attendance": "厳しい",
-    "testDifficulty": "",
+    "testDifficulty": null,
     "reportDifficulty": 3,
     "reportAmount": 1,
     "assignmentDifficulty": 3,
@@ -315,6 +324,7 @@
     "comment": "テストないので課題、レポートをちゃんと出してればS取れます。わからない時は先生に聞いたら絶対に教えてくれるし、コードはAIを参考に作成して合ってるかどうか先生に聞くのもあり。"
   },
   {
+    "id": 28,
     "classId": 4,
     "studentYear": "24",
     "attendance": "厳しくない",
@@ -325,7 +335,8 @@
     "assignmentAmount": 3,
     "comment": ""
   },
-  {  
+  {
+    "id": 29,
     "classId": 8,
     "studentYear": "24",
     "attendance": "厳しい",
@@ -334,5 +345,6 @@
     "reportAmount": 3,
     "assignmentDifficulty": 3,
     "assignmentAmount": 3,
-    "comment": "板書の字がとても読みにくい"  
+    "comment": "板書の字がとても読みにくい"
   }
+]
