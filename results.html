@@ -53,6 +53,12 @@ header p{
   margin-bottom:18px;
 }
 
+.result-title h2{
+  margin:0;
+  font-size:18px;
+  font-weight:700;
+}
+
 .course-slider{
   display:flex;
   gap:16px;
@@ -120,6 +126,7 @@ header p{
   border-radius:50%;
   background:#cbd5e1;
   transition:.2s;
+  cursor:pointer;
 }
 
 .indicator-dot.active{
@@ -326,6 +333,71 @@ header p{
   border-radius:10px;
 }
 
+.post-box{
+  margin-top:24px;
+  border-top:1px solid #e5e7eb;
+  padding-top:20px;
+}
+
+.post-box h3{
+  margin:0 0 12px;
+}
+
+.post-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.post-field label{
+  display:block;
+  font-weight:700;
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+.post-field input,
+.post-field select,
+.post-field textarea{
+  width:100%;
+  padding:10px;
+  border:1px solid #cbd5e1;
+  border-radius:8px;
+  font-size:14px;
+  background:white;
+}
+
+.post-field textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.post-field.full{
+  grid-column:1 / -1;
+}
+
+.post-btn{
+  margin-top:14px;
+  background:#2563eb;
+  color:white;
+  border:none;
+  border-radius:9px;
+  padding:12px 18px;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.post-btn:hover{
+  background:#1d4ed8;
+}
+
+.post-note{
+  color:#64748b;
+  font-size:13px;
+  margin-top:8px;
+}
+
 @media(max-width:800px){
   .course-body{
     grid-template-columns:1fr;
@@ -342,6 +414,10 @@ header p{
   .course-mini-card{
     min-width:230px;
     max-width:230px;
+  }
+
+  .post-grid{
+    grid-template-columns:1fr;
   }
 }
 </style>
@@ -368,25 +444,48 @@ header p{
 
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCs2G-LhqC8ZrkvK5QJtYHiMGAK6rKPh9E",
+  authDomain: "search-9aee7.firebaseapp.com",
+  projectId: "search-9aee7",
+  storageBucket: "search-9aee7.firebasestorage.app",
+  messagingSenderId: "541254473766",
+  appId: "1:541254473766:web:ea29fc67955cc0f4dfeee7"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 let classes = [];
 let reviews = [];
 let currentResults = [];
 let selectedIndex = 0;
 
-async function loadData(){
+async function loadData(preferredClassId = null){
   try{
     const classResponse = await fetch("classes.json");
     classes = await classResponse.json();
 
-    const reviewResponse = await fetch("reviews.json");
-    reviews = await reviewResponse.json();
+    const snapshot = await getDocs(collection(db, "reviews"));
+    reviews = snapshot.docs.map(doc => ({
+      firestoreId: doc.id,
+      ...doc.data()
+    }));
 
-    searchClasses();
+    searchClasses(preferredClassId);
   }catch(error){
     document.getElementById("courseSlider").innerHTML = "";
     document.getElementById("courseDetail").innerHTML =
-      `<div class="card">データの読み込みに失敗しました。classes.json / reviews.json を確認してください。</div>`;
+      `<div class="card">データの読み込みに失敗しました。Firestore / classes.json を確認してください。</div>`;
     console.error(error);
   }
 }
@@ -395,6 +494,7 @@ function stars(n){
   if(n === null || n === undefined || n === ""){
     return "未入力";
   }
+
   n = Number(n || 0);
   return "★".repeat(n) + "☆".repeat(5-n);
 }
@@ -420,15 +520,17 @@ function attendanceClass(value){
 
 function mostCommonAttendance(classReviews){
   if(classReviews.length === 0) return "不明";
+
   const count = {};
   classReviews.forEach(r=>{
     const key = r.attendance || "不明";
     count[key] = (count[key] || 0) + 1;
   });
+
   return Object.entries(count).sort((a,b)=>b[1]-a[1])[0][0];
 }
 
-function searchClasses(){
+function searchClasses(preferredClassId = null){
   const params = new URLSearchParams(location.search);
 
   const keyword = params.get("keyword") || "";
@@ -440,7 +542,7 @@ function searchClasses(){
   const maxReport = Number(params.get("maxReport") || 100);
 
   const results = classes.filter(c=>{
-    const classReviews = reviews.filter(r=>r.classId === c.id);
+    const classReviews = reviews.filter(r=>Number(r.classId) === Number(c.id));
 
     const text = [
       c.name,
@@ -466,10 +568,10 @@ function searchClasses(){
     );
   });
 
-  displayResults(results);
+  displayResults(results, preferredClassId);
 }
 
-function displayResults(results){
+function displayResults(results, preferredClassId = null){
   currentResults = results;
   selectedIndex = 0;
 
@@ -494,12 +596,18 @@ function displayResults(results){
   slider.style.display = "flex";
   indicator.style.display = "flex";
 
+  const preferredIndex = preferredClassId === null
+    ? 0
+    : Math.max(0, results.findIndex(c => Number(c.id) === Number(preferredClassId)));
+
+  selectedIndex = preferredIndex;
+
   results.forEach((c,index)=>{
-    const classReviews = reviews.filter(r=>r.classId === c.id);
+    const classReviews = reviews.filter(r=>Number(r.classId) === Number(c.id));
     const attendance = mostCommonAttendance(classReviews);
 
     const mini = document.createElement("div");
-    mini.className = "course-mini-card" + (index === 0 ? " active" : "");
+    mini.className = "course-mini-card" + (index === preferredIndex ? " active" : "");
     mini.innerHTML = `
       <div class="mini-title">${c.name}</div>
       <div class="mini-teacher">${c.teacher}</div>
@@ -519,15 +627,26 @@ function displayResults(results){
     slider.appendChild(mini);
 
     const dot = document.createElement("div");
-    dot.className = "indicator-dot" + (index === 0 ? " active" : "");
+    dot.className = "indicator-dot" + (index === preferredIndex ? " active" : "");
     dot.addEventListener("click",()=>{
       selectCourse(index);
       slider.children[index].scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
     });
+
     indicator.appendChild(dot);
   });
 
-  renderDetail(0);
+  renderDetail(preferredIndex);
+
+  setTimeout(()=>{
+    if(slider.children[preferredIndex]){
+      slider.children[preferredIndex].scrollIntoView({
+        behavior:"smooth",
+        inline:"center",
+        block:"nearest"
+      });
+    }
+  }, 100);
 }
 
 function selectCourse(index){
@@ -546,7 +665,7 @@ function selectCourse(index){
 
 function renderDetail(index){
   const c = currentResults[index];
-  const classReviews = reviews.filter(r=>r.classId === c.id);
+  const classReviews = reviews.filter(r=>Number(r.classId) === Number(c.id));
   const ev = getEvaluation(c);
   const attendance = mostCommonAttendance(classReviews);
 
@@ -625,9 +744,141 @@ function renderDetail(index){
       </div>
 
       ${reviewHtml || `<div class="empty">まだレビューがありません。</div>`}
+
+      ${postFormHtml(c.id)}
     </section>
   `;
 }
+
+function postFormHtml(classId){
+  return `
+    <div class="post-box">
+      <h3>口コミを投稿する</h3>
+
+      <div class="post-grid">
+        <div class="post-field">
+          <label>学籍番号上二桁</label>
+          <input id="postStudentYear" maxlength="2" placeholder="例：24">
+        </div>
+
+        <div class="post-field">
+          <label>出席の厳しさ</label>
+          <select id="postAttendance">
+            <option value="厳しい">厳しい</option>
+            <option value="普通">普通</option>
+            <option value="厳しくない">厳しくない</option>
+          </select>
+        </div>
+
+        <div class="post-field">
+          <label>テスト難易度</label>
+          ${ratingSelect("postTestDifficulty")}
+        </div>
+
+        <div class="post-field">
+          <label>レポート難易度</label>
+          ${ratingSelect("postReportDifficulty")}
+        </div>
+
+        <div class="post-field">
+          <label>レポート量</label>
+          ${ratingSelect("postReportAmount")}
+        </div>
+
+        <div class="post-field">
+          <label>課題難易度</label>
+          ${ratingSelect("postAssignmentDifficulty")}
+        </div>
+
+        <div class="post-field">
+          <label>課題量</label>
+          ${ratingSelect("postAssignmentAmount")}
+        </div>
+
+        <div class="post-field full">
+          <label>一言レビュー</label>
+          <textarea id="postComment" placeholder="授業の雰囲気、注意点、課題やテストについて自由に書いてください"></textarea>
+        </div>
+      </div>
+
+      <button class="post-btn" id="postSubmitButton">口コミを投稿</button>
+      <div class="post-note">投稿後、すぐ画面に反映されます。</div>
+    </div>
+  `;
+}
+
+function ratingSelect(id){
+  return `
+    <select id="${id}">
+      <option value="">未入力</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+  `;
+}
+
+function toNumberOrNull(value){
+  if(value === null || value === undefined || value === ""){
+    return null;
+  }
+  return Number(value);
+}
+
+async function submitReview(classId){
+  const studentYear = document.getElementById("postStudentYear").value.trim() || "24";
+  const attendance = document.getElementById("postAttendance").value;
+  const testDifficulty = document.getElementById("postTestDifficulty").value;
+  const reportDifficulty = document.getElementById("postReportDifficulty").value;
+  const reportAmount = document.getElementById("postReportAmount").value;
+  const assignmentDifficulty = document.getElementById("postAssignmentDifficulty").value;
+  const assignmentAmount = document.getElementById("postAssignmentAmount").value;
+  const comment = document.getElementById("postComment").value.trim();
+
+  if(comment === ""){
+    alert("一言レビューを入力してください。");
+    return;
+  }
+
+  const button = document.getElementById("postSubmitButton");
+  button.disabled = true;
+  button.textContent = "投稿中...";
+
+  try{
+    await addDoc(collection(db, "reviews"), {
+      classId: Number(classId),
+      studentYear,
+      attendance,
+      testDifficulty: toNumberOrNull(testDifficulty),
+      reportDifficulty: toNumberOrNull(reportDifficulty),
+      reportAmount: toNumberOrNull(reportAmount),
+      assignmentDifficulty: toNumberOrNull(assignmentDifficulty),
+      assignmentAmount: toNumberOrNull(assignmentAmount),
+      comment,
+      createdAt: new Date()
+    });
+
+    alert("口コミを投稿しました。");
+    await loadData(classId);
+  }catch(error){
+    console.error(error);
+    alert("投稿に失敗しました。Firestoreのルールを確認してください。");
+  }finally{
+    button.disabled = false;
+    button.textContent = "口コミを投稿";
+  }
+}
+
+document.addEventListener("click", async (event)=>{
+  if(event.target && event.target.id === "postSubmitButton"){
+    const c = currentResults[selectedIndex];
+    if(c){
+      await submitReview(c.id);
+    }
+  }
+});
 
 loadData();
 </script>
