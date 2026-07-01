@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>reviews.json アップロード</title>
+</head>
+<body>
+<h1>reviews.json → Firestore</h1>
+<button id="uploadBtn">アップロード開始</button>
+<p id="status"></p>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCs2G-LhqC8ZrkvK5QJtYHiMGAK6rKPh9E",
+  authDomain: "search-9aee7.firebaseapp.com",
+  projectId: "search-9aee7",
+  storageBucket: "search-9aee7.firebasestorage.app",
+  messagingSenderId: "541254473766",
+  appId: "1:541254473766:web:ea29fc67955cc0f4dfeee7"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("uploadBtn").addEventListener("click", async () => {
+  const status = document.getElementById("status");
+
+  try {
+    status.textContent = "reviews.json を読み込み中...";
+
+    const response = await fetch("reviews.json");
+    const reviews = await response.json();
+
+    status.textContent = `${reviews.length}件をアップロード中...`;
+
+    for (const review of reviews) {
+      await setDoc(
+        doc(db, "reviews", String(review.id)),
+        review
+      );
+    }
+
+    status.textContent = `完了！${reviews.length}件をFirestoreに登録しました。`;
+  } catch (error) {
+    console.error(error);
+    status.textContent = "エラーが出ました。Consoleを確認してください。";
+  }
+});
+</script>
+</body>
+</html>
