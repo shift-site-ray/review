@@ -47,6 +47,19 @@ header p{
   box-shadow:0 4px 16px rgba(0,0,0,.08);
 }
 
+.section-title{
+  font-size:22px;
+  font-weight:900;
+  margin:0 0 8px;
+}
+
+.section-sub{
+  color:#64748b;
+  font-size:14px;
+  line-height:1.7;
+  margin:0 0 18px;
+}
+
 label{
   display:block;
   font-weight:800;
@@ -54,12 +67,18 @@ label{
   margin-bottom:8px;
 }
 
-input,select{
+input,select,textarea{
   width:100%;
   padding:13px;
   border:1px solid #d6dce5;
   border-radius:10px;
   font-size:15px;
+  font-family:inherit;
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
 }
 
 .range-title{
@@ -133,6 +152,38 @@ button:hover{
   padding:14px;
   border-radius:10px;
   font-size:14px;
+  line-height:1.7;
+}
+
+.divider{
+  margin:34px 0;
+  border:none;
+  border-top:1px solid #e5e7eb;
+}
+
+.ai-box{
+  background:#f8fbff;
+  border:1px solid #bfdbfe;
+  border-radius:16px;
+  padding:22px;
+}
+
+.ai-label{
+  display:inline-block;
+  background:#e0ecff;
+  color:#1d4ed8;
+  font-weight:900;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:13px;
+  margin-bottom:10px;
+}
+
+.example{
+  font-size:13px;
+  color:#64748b;
+  line-height:1.7;
+  margin-top:8px;
 }
 </style>
 </head>
@@ -141,11 +192,16 @@ button:hover{
 
 <header>
   <h1>最適授業サーチ</h1>
-  <p>希望条件から、先輩レビュー付きの授業を検索</p>
+  <p>希望条件や相談文から、自分に合った授業を探せます</p>
 </header>
 
 <div class="container">
   <div class="search-card">
+
+    <h2 class="section-title">条件から探す</h2>
+    <p class="section-sub">
+      授業名・先生名・評価割合などを指定して、条件に合う授業を検索できます。
+    </p>
 
     <label>キーワード</label>
     <input id="keyword" placeholder="例：Python、数学、レポート、吉田">
@@ -175,6 +231,29 @@ button:hover{
 
     <div class="note">
       例：試験なしがいい場合は「試験割合 0%〜0%」で検索できます。
+    </div>
+
+    <hr class="divider">
+
+    <div class="ai-box">
+      <div class="ai-label">AI授業相談</div>
+
+      <h2 class="section-title">文章で相談して探す</h2>
+      <p class="section-sub">
+        まだ条件がはっきり決まっていない場合は、希望を文章で入力するとおすすめ授業を提案します。
+      </p>
+
+      <label>相談内容</label>
+      <textarea id="aiText" placeholder="例：Pythonを使って学びたい。テストは苦手で、レポート中心がいい。将来IT系に進みたい。"></textarea>
+
+      <div class="example">
+        入力例：<br>
+        ・数学は好きだけど、テストが重い授業は避けたい<br>
+        ・Pythonやデータ分析を学びたい<br>
+        ・レポート中心で取りやすい授業を知りたい
+      </div>
+
+      <button onclick="goAI()">AIにおすすめしてもらう</button>
     </div>
 
   </div>
@@ -226,9 +305,21 @@ function goResults(){
     `results.html?keyword=${keyword}&attendance=${attendance}&minTest=${minTest}&maxTest=${maxTest}&minReport=${minReport}&maxReport=${maxReport}`;
 }
 
+function goAI(){
+  const text = document.getElementById("aiText").value.trim();
+
+  if(text === ""){
+    alert("相談内容を入力してください。");
+    return;
+  }
+
+  location.href = `ai.html?text=${encodeURIComponent(text)}`;
+}
+
 function resetForm(){
   document.getElementById("keyword").value = "";
   document.getElementById("attendance").value = "";
+  document.getElementById("aiText").value = "";
   testSlider.noUiSlider.set([0,100]);
   reportSlider.noUiSlider.set([0,100]);
 }
