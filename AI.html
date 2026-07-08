@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>AI授業相談｜最適授業サーチ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
+  background:#f4f7fb;
+  color:#111827;
+}
+
+header{
+  background:linear-gradient(90deg,#003b8f,#0057d9);
+  color:white;
+  padding:24px 36px;
+}
+
+header h1{
+  margin:0;
+  font-size:28px;
+}
+
+header p{
+  margin:6px 0 0;
+  font-size:14px;
+}
+
+.container{
+  max-width:950px;
+  margin:28px auto;
+  padding:0 20px;
+}
+
+.back{
+  display:inline-block;
+  margin-bottom:18px;
+  color:#2563eb;
+  text-decoration:none;
+  font-weight:700;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:24px;
+  margin-bottom:22px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+}
+
+.user-text{
+  background:#eef6ff;
+  border:1px solid #93c5fd;
+  color:#0f3f8c;
+  padding:14px;
+  border-radius:12px;
+  line-height:1.7;
+}
+
+.rank{
+  font-size:22px;
+  font-weight:900;
+  color:#0057d9;
+}
+
+.course-title{
+  font-size:26px;
+  font-weight:900;
+  margin:8px 0;
+}
+
+.teacher{
+  color:#475569;
+}
+
+.reason{
+  line-height:1.8;
+  margin-top:14px;
+}
+
+.tag{
+  display:inline-block;
+  background:#e9f1ff;
+  color:#1e40af;
+  padding:5px 9px;
+  border-radius:6px;
+  margin:4px 4px 4px 0;
+  font-size:13px;
+}
+
+.detail-btn{
+  display:inline-block;
+  margin-top:16px;
+  background:#0057d9;
+  color:white;
+  padding:10px 16px;
+  border-radius:9px;
+  text-decoration:none;
+  font-weight:800;
+}
+
+.detail-btn:hover{
+  background:#0046b5;
+}
+
+.score{
+  color:#64748b;
+  font-size:13px;
+  margin-top:6px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>AI授業相談</h1>
+  <p>入力された希望から、おすすめ授業を提案します</p>
+</header>
+
+<div class="container">
+
+<a class="back" href="index.html">← 検索画面に戻る</a>
+
+<div class="card">
+  <h2>あなたの相談内容</h2>
+  <div id="userText" class="user-text"></div>
+</div>
+
+<div class="card">
+  <h2>AI授業コンシェルジュ</h2>
+  <p id="summary"></p>
+</div>
+
+<div id="recommendList"></div>
+
+</div>
+
+<script>
+let classes = [];
+
+async function loadData(){
+  const res = await fetch("classes.json");
+  classes = await res.json();
+
+  showRecommendations();
+}
+
+function getText(){
+  const params = new URLSearchParams(location.search);
+  return decodeURIComponent(params.get("text") || "");
+}
+
+function includesAny(text, words){
+  return words.some(w => text.includes(w));
+}
+
+function getEval(course, key){
+  return course.evaluation?.[key] || 0;
+}
+
+function scoreCourse(course, text){
+  let score = 0;
+  const dataText = [
+    course.name,
+    course.teacher,
+    course.description,
+    ...(course.tags || [])
+  ].join("");
+
+  const testRate = getEval(course, "試験") + getEval(course, "テスト");
+  const reportRate = getEval(course, "レポート");
+  const quizRate = getEval(course, "小テスト");
+  const otherRate = getEval(course, "その他");
+  const practiceRate = getEval(course, "演習") + getEval(course, "発表");
+
+  if(includesAny(text, ["Python", "python", "プログラミング", "コード", "IT", "データ分析"])){
+    if(dataText.includes("Python")) score += 8;
+    if(dataText.includes("データ分析")) score += 5;
+    if(dataText.includes("プログラミング")) score += 5;
+    if(dataText.includes("シミュレーション")) score += 4;
+  }
+
+  if(includesAny(text, ["数学", "数理", "理論"])){
+    if(dataText.includes("数学")) score += 4;
+    if(dataText.includes("群") || dataText.includes("幾何") || dataText.includes("微分方程式")) score += 4;
+  }
+
+  if(includesAny(text, ["統計", "データ", "分析"])){
+    if(dataText.includes("統計")) score += 8;
+    if(dataText.includes("データ分析")) score += 6;
+    if(dataText.includes("ベイズ")) score += 4;
+  }
+
+  if(includesAny(text, ["AI", "人工知能"])){
+    if(dataText.includes("Python")) score += 5;
+    if(dataText.includes("データ分析")) score += 5;
+    if(dataText.includes("シミュレーション")) score += 3;
+  }
+
+  if(includesAny(text, ["テスト苦手", "試験苦手", "試験なし", "テストなし", "テストが苦手"])){
+    if(testRate === 0) score += 8;
+    if(testRate <= 30) score += 5;
+    if(testRate >= 70) score -= 5;
+  }
+
+  if(includesAny(text, ["レポート中心", "レポートで取りたい", "レポートがいい"])){
+    if(reportRate >= 60) score += 7;
+    if(reportRate === 100) score += 4;
+  }
+
+  if(includesAny(text, ["オンライン", "オンデマンド"])){
+    if(dataText.includes("オンライン")) score += 7;
+    if(dataText.includes("オンデマンド")) score += 7;
+  }
+
+  if(includesAny(text, ["楽", "楽単", "簡単", "取りやすい"])){
+    if(testRate === 0) score += 4;
+    if(reportRate >= 60) score += 2;
+  }
+
+  if(includesAny(text, ["発表", "グループワーク", "プロジェクト"])){
+    if(dataText.includes("発表")) score += 4;
+    if(dataText.includes("グループワーク")) score += 4;
+    if(dataText.includes("PBL")) score += 5;
+    if(practiceRate > 0 || otherRate > 0) score += 2;
+  }
+
+  return score;
+}
+
+function makeReason(course, text){
+  const reasons = [];
+  const dataText = [
+    course.name,
+    course.description,
+    ...(course.tags || [])
+  ].join("");
+
+  const testRate = getEval(course, "試験") + getEval(course, "テスト");
+  const reportRate = getEval(course, "レポート");
+
+  if(dataText.includes("Python")){
+    reasons.push("Pythonに関連する内容を学べるため、プログラミングやデータ活用に興味がある人に向いています。");
+  }
+
+  if(dataText.includes("データ分析") || dataText.includes("統計")){
+    reasons.push("統計やデータ分析に関係する授業なので、将来IT・データ系に進みたい人にも役立ちやすいです。");
+  }
+
+  if(testRate === 0){
+    reasons.push("評価に試験が含まれていないため、テストが苦手な人でも取り組みやすい可能性があります。");
+  }else if(testRate >= 60){
+    reasons.push(`試験割合が${testRate}%あるため、テスト対策は必要です。`);
+  }
+
+  if(reportRate >= 60){
+    reasons.push(`レポート割合が${reportRate}%なので、レポート中心で進めたい人に合いやすいです。`);
+  }
+
+  if(dataText.includes("オンライン")){
+    reasons.push("オンライン要素があるため、通学や出席形式を重視する人にも確認する価値があります。");
+  }
+
+  if(reasons.length === 0){
+    reasons.push("入力された希望と授業内容・タグの一致度が比較的高かったため、おすすめに入りました。");
+  }
+
+  return reasons;
+}
+
+function showRecommendations(){
+  const text = getText();
+
+  document.getElementById("userText").textContent = text;
+
+  const ranked = classes
+    .map(c => ({
+      ...c,
+      score: scoreCourse(c, text)
+    }))
+    .sort((a,b) => b.score - a.score)
+    .slice(0,5);
+
+  const top = ranked[0];
+
+  document.getElementById("summary").innerHTML = `
+    あなたの希望内容をもとに、授業内容・タグ・評価割合を照合しました。<br>
+    特におすすめなのは <strong>${top.name}</strong> です。
+  `;
+
+  const list = document.getElementById("recommendList");
+  list.innerHTML = "";
+
+  ranked.forEach((course, index) => {
+    const rankLabel = ["🥇 1位", "🥈 2位", "🥉 3位", "4位", "5位"][index];
+    const reasons = makeReason(course, text);
+
+    list.innerHTML += `
+      <div class="card">
+        <div class="rank">${rankLabel}</div>
+
+        <div class="course-title">${course.name}</div>
+        <div class="teacher"><strong>先生：</strong>${course.teacher}</div>
+
+        <div>
+          ${(course.tags || []).map(t => `<span class="tag">${t}</span>`).join("")}
+        </div>
+
+        <div class="reason">
+          <strong>おすすめ理由</strong><br>
+          ${reasons.map(r => `・${r}`).join("<br>")}
+        </div>
+
+        <div class="score">推薦スコア：${course.score}</div>
+
+        <a class="detail-btn" href="results.html?keyword=${encodeURIComponent(course.name)}&attendance=&minTest=0&maxTest=100&minReport=0&maxReport=100">
+          この授業の詳細を見る
+        </a>
+      </div>
+    `;
+  });
+}
+
+loadData();
+</script>
+
+</body>
+</html>
