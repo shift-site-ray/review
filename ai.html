@@ -7,17 +7,126 @@
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:"Segoe UI",sans-serif;background:#f4f7fb;color:#111827}
-header{background:linear-gradient(90deg,#003b8f,#0057d9);color:white;padding:24px 36px}
-header h1{margin:0;font-size:28px}
-header p{margin:6px 0 0;font-size:14px}
-.container{max-width:900px;margin:28px auto;padding:0 20px}
-.back{display:inline-block;margin-bottom:18px;color:#2563eb;text-decoration:none;font-weight:700}
-.card{background:white;border-radius:18px;padding:24px;margin-bottom:22px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
-.user-text{background:#eef6ff;border:1px solid #93c5fd;color:#0f3f8c;padding:14px;border-radius:12px;line-height:1.7;white-space:pre-wrap}
-.answer{line-height:1.9;white-space:pre-wrap}
-.loading{color:#64748b}
-.btn{display:inline-block;margin-top:14px;background:#0057d9;color:white;padding:10px 16px;border-radius:9px;text-decoration:none;font-weight:800}
+
+body{
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
+  background:#f4f7fb;
+  color:#111827;
+}
+
+header{
+  background:linear-gradient(90deg,#003b8f,#0057d9);
+  color:white;
+  padding:24px 36px;
+}
+
+header h1{
+  margin:0;
+  font-size:28px;
+}
+
+header p{
+  margin:6px 0 0;
+  font-size:14px;
+}
+
+.container{
+  max-width:950px;
+  margin:28px auto;
+  padding:0 20px;
+}
+
+.back{
+  display:inline-block;
+  margin-bottom:18px;
+  color:#2563eb;
+  text-decoration:none;
+  font-weight:700;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:24px;
+  margin-bottom:22px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+}
+
+.user-text{
+  background:#eef6ff;
+  border:1px solid #93c5fd;
+  color:#0f3f8c;
+  padding:14px;
+  border-radius:12px;
+  line-height:1.7;
+  white-space:pre-wrap;
+}
+
+.ai-summary{
+  line-height:1.8;
+}
+
+.recommend-card{
+  background:white;
+  border-radius:18px;
+  padding:24px;
+  margin-bottom:22px;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+  border:1px solid #e5e7eb;
+}
+
+.rank{
+  display:inline-block;
+  background:#e0ecff;
+  color:#1d4ed8;
+  font-weight:900;
+  padding:5px 12px;
+  border-radius:999px;
+  margin-bottom:10px;
+}
+
+.course-title{
+  font-size:26px;
+  font-weight:900;
+  margin:6px 0;
+}
+
+.reason-box{
+  margin-top:14px;
+  line-height:1.8;
+}
+
+.reason-box h4{
+  margin:12px 0 4px;
+}
+
+.detail-btn{
+  display:inline-block;
+  margin-top:18px;
+  background:#0057d9;
+  color:white;
+  padding:10px 16px;
+  border-radius:9px;
+  text-decoration:none;
+  font-weight:800;
+}
+
+.detail-btn:hover{
+  background:#0046b5;
+}
+
+.loading{
+  color:#64748b;
+}
+
+.error{
+  color:#991b1b;
+  background:#fee2e2;
+  padding:14px;
+  border-radius:10px;
+  line-height:1.7;
+}
 </style>
 </head>
 
@@ -25,7 +134,7 @@ header p{margin:6px 0 0;font-size:14px}
 
 <header>
   <h1>AI授業相談</h1>
-  <p>希望文をもとに、Geminiが授業を推薦します</p>
+  <p>希望文と先輩レビューをもとに、Geminiが授業を推薦します</p>
 </header>
 
 <div class="container">
@@ -39,8 +148,10 @@ header p{margin:6px 0 0;font-size:14px}
 
 <div class="card">
   <h2>AI授業コンシェルジュ</h2>
-  <div id="answer" class="answer loading">回答を生成中...</div>
+  <div id="summary" class="ai-summary loading">回答を生成中...</div>
 </div>
+
+<div id="recommendList"></div>
 
 </div>
 
@@ -52,7 +163,7 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
-const GEMINI_API_KEY = "AQ.Ab8RN6KgvcUHDOVJzRKsOXXRotlj67jtQoPPYnKExueemYEWgg";
+const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCs2G-LhqC8ZrkvK5QJtYHiMGAK6rKPh9E",
@@ -98,13 +209,28 @@ ${JSON.stringify(classes, null, 2)}
 【先輩レビュー】
 ${JSON.stringify(reviews, null, 2)}
 
-【回答ルール】
-- 日本語で答える
-- おすすめ授業を3つまで出す
-- 各授業について「おすすめ理由」「注意点」を書く
-- 「楽」「簡単」などの希望がある場合は、レビュー内の表現も根拠にする
-- 最後に「詳細は授業レビュー画面で確認してください」と添える
-- 断定しすぎず、「可能性があります」「向いています」のように表現する
+【出力形式】
+必ず次のJSONだけを返してください。
+Markdownや説明文は一切つけないでください。
+
+{
+  "summary": "ユーザーの希望を分析した短い文章",
+  "recommendations": [
+    {
+      "rank": 1,
+      "courseName": "授業名",
+      "reason": "おすすめ理由",
+      "caution": "注意点",
+      "reviewEvidence": "先輩レビューから読み取れる根拠"
+    }
+  ]
+}
+
+【ルール】
+- recommendationsは最大3件
+- courseNameは授業データに存在する授業名だけ
+- 「楽」「簡単」などの希望がある場合は、先輩レビューの内容を根拠にする
+- 断定しすぎず、「向いている可能性があります」のように書く
 `;
 }
 
@@ -113,15 +239,15 @@ async function callGemini(prompt){
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
   const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
     },
-    body: JSON.stringify({
-      contents: [
+    body:JSON.stringify({
+      contents:[
         {
-          parts: [
-            { text: prompt }
+          parts:[
+            { text:prompt }
           ]
         }
       ]
@@ -134,7 +260,62 @@ async function callGemini(prompt){
   }
 
   const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || "回答を取得できませんでした。";
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+}
+
+function cleanJsonText(text){
+  return text
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
+}
+
+function courseDetailUrl(courseName){
+  return `results.html?keyword=${encodeURIComponent(courseName)}&attendance=&minTest=0&maxTest=100&minReport=0&maxReport=100`;
+}
+
+function renderRecommendations(aiData){
+  const summary = document.getElementById("summary");
+  const list = document.getElementById("recommendList");
+
+  summary.classList.remove("loading");
+  summary.textContent = aiData.summary || "おすすめ授業を表示します。";
+
+  list.innerHTML = "";
+
+  const rankLabels = {
+    1:"🥇 1位",
+    2:"🥈 2位",
+    3:"🥉 3位"
+  };
+
+  aiData.recommendations.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "recommend-card";
+
+    card.innerHTML = `
+      <div class="rank">${rankLabels[item.rank] || item.rank + "位"}</div>
+
+      <div class="course-title">${item.courseName}</div>
+
+      <div class="reason-box">
+        <h4>おすすめ理由</h4>
+        <div>${item.reason || ""}</div>
+
+        <h4>注意点</h4>
+        <div>${item.caution || ""}</div>
+
+        <h4>先輩レビューからの根拠</h4>
+        <div>${item.reviewEvidence || ""}</div>
+      </div>
+
+      <a class="detail-btn" href="${courseDetailUrl(item.courseName)}">
+        この授業のレビューを見る
+      </a>
+    `;
+
+    list.appendChild(card);
+  });
 }
 
 async function main(){
@@ -146,15 +327,21 @@ async function main(){
     const reviews = await loadReviews();
 
     const prompt = buildPrompt(userText, classes, reviews);
-    const answer = await callGemini(prompt);
+    const rawAnswer = await callGemini(prompt);
 
-    document.getElementById("answer").classList.remove("loading");
-    document.getElementById("answer").innerHTML =
-      answer + `\n\n<a class="btn" href="results.html?keyword=&attendance=&minTest=0&maxTest=100&minReport=0&maxReport=100">授業レビューを見る</a>`;
+    const cleaned = cleanJsonText(rawAnswer);
+    const aiData = JSON.parse(cleaned);
+
+    renderRecommendations(aiData);
+
   }catch(error){
     console.error(error);
-    document.getElementById("answer").textContent =
-      "AI回答の取得に失敗しました。APIキーや通信設定を確認してください。";
+    document.getElementById("summary").classList.remove("loading");
+    document.getElementById("summary").innerHTML =
+      `<div class="error">
+        AI回答の取得に失敗しました。<br>
+        APIキー、モデル名、またはGemini APIの利用設定を確認してください。
+      </div>`;
   }
 }
 
