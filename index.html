@@ -23,13 +23,13 @@
         "Yu Gothic",
         "Meiryo",
         sans-serif;
-      background: #f4f7fb;
       color: #111827;
+      background: #f4f7fb;
     }
 
     /* ヘッダー */
     header {
-      padding: 18px 32px;
+      padding: 17px 30px;
       color: white;
       background:
         linear-gradient(
@@ -41,37 +41,37 @@
 
     header h1 {
       margin: 0;
-      font-size: 26px;
+      font-size: 25px;
     }
 
     header p {
       margin: 4px 0 0;
-      font-size: 14px;
+      font-size: 13px;
       opacity: 0.95;
     }
 
-    /* 全体 */
+    /* ページ全体 */
     .container {
       width: min(760px, calc(100% - 28px));
-      margin: 18px auto;
+      margin: 16px auto;
     }
 
     .main-card {
-      padding: 22px;
+      padding: 21px;
       background: white;
-      border-radius: 16px;
+      border-radius: 15px;
       box-shadow:
         0 5px 18px rgba(15, 23, 42, 0.08);
     }
 
     h2 {
-      margin: 0 0 16px;
+      margin: 0 0 14px;
       font-size: 21px;
     }
 
     label {
       display: block;
-      margin: 14px 0 6px;
+      margin: 12px 0 6px;
       font-size: 14px;
       font-weight: 700;
     }
@@ -81,7 +81,7 @@
       display: flex;
       align-items: center;
       width: 100%;
-      height: 46px;
+      height: 45px;
       overflow: hidden;
       background: white;
       border: 1px solid #cbd5e1;
@@ -108,6 +108,7 @@
       background: transparent;
     }
 
+    /* 共通の虫眼鏡ボタン */
     .search-icon-button {
       display: flex;
       align-items: center;
@@ -121,12 +122,17 @@
       cursor: pointer;
       transition:
         color 0.2s,
-        background 0.2s;
+        background 0.2s,
+        transform 0.2s;
     }
 
     .search-icon-button:hover {
       color: #1d4ed8;
       background: #eff6ff;
+    }
+
+    .search-icon-button:active {
+      transform: scale(0.94);
     }
 
     .search-icon-button:focus-visible {
@@ -139,59 +145,82 @@
       height: 21px;
     }
 
-    /* 条件欄 */
-    .condition-grid {
+    /* 割合スライダー */
+    .range-section {
       display: grid;
       grid-template-columns:
         repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 5px;
-    }
-
-    .condition-item label {
-      margin-top: 10px;
-    }
-
-    select {
-      width: 100%;
-      height: 42px;
-      padding: 0 10px;
-      font-size: 14px;
-      color: #111827;
-      background: white;
-      border: 1px solid #cbd5e1;
-      border-radius: 9px;
-      outline: none;
-    }
-
-    select:focus {
-      border-color: #2563eb;
-      box-shadow:
-        0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    /* 区切り */
-    .divider {
-      display: flex;
-      align-items: center;
       gap: 14px;
-      margin: 22px 0;
-      color: #64748b;
-      font-size: 13px;
+      margin-top: 9px;
+    }
+
+    .range-card {
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 11px;
+    }
+
+    .range-card label {
+      margin: 0 0 8px;
+    }
+
+    .range-value {
+      margin-bottom: 5px;
+      color: #2563eb;
+      font-size: 14px;
       font-weight: 700;
+      text-align: right;
     }
 
-    .divider::before,
-    .divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: #e2e8f0;
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      margin: 4px 0;
+      appearance: none;
+      -webkit-appearance: none;
+      background: #dbe4f0;
+      border-radius: 999px;
+      outline: none;
+      cursor: pointer;
     }
 
-    /* AI相談 */
+    input[type="range"]::-webkit-slider-thumb {
+      width: 18px;
+      height: 18px;
+      appearance: none;
+      -webkit-appearance: none;
+      background: #2563eb;
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow:
+        0 1px 5px rgba(15, 23, 42, 0.3);
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      background: #2563eb;
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow:
+        0 1px 5px rgba(15, 23, 42, 0.3);
+      cursor: pointer;
+    }
+
+    .range-scale {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2px;
+      color: #64748b;
+      font-size: 11px;
+    }
+
+    /* AIコンシェルジュ */
     .ai-box {
-      padding: 18px;
+      margin-top: 18px;
+      padding: 17px;
       background:
         linear-gradient(
           135deg,
@@ -206,7 +235,7 @@
       display: flex;
       align-items: center;
       gap: 9px;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
 
     .ai-icon {
@@ -230,23 +259,23 @@
     }
 
     .ai-subtitle {
-      margin: 0 0 7px;
+      margin: 0 0 6px;
       color: #334155;
       font-size: 15px;
       font-weight: 700;
     }
 
     .ai-description {
-      margin: 0 0 12px;
+      margin: 0 0 10px;
       color: #475569;
       font-size: 13px;
-      line-height: 1.65;
+      line-height: 1.6;
     }
 
     textarea {
       width: 100%;
-      min-height: 92px;
-      padding: 11px 12px;
+      min-height: 87px;
+      padding: 10px 12px;
       resize: vertical;
       font-family: inherit;
       font-size: 14px;
@@ -263,12 +292,54 @@
         0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
+    /* AI入力欄と虫眼鏡 */
+    .ai-input-area {
+      position: relative;
+    }
+
+    .ai-input-area textarea {
+      padding-right: 54px;
+    }
+
+    .ai-search-button {
+      position: absolute;
+      right: 7px;
+      bottom: 8px;
+      width: 40px;
+      height: 40px;
+      color: white;
+      background: #2563eb;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition:
+        background 0.2s,
+        transform 0.2s,
+        box-shadow 0.2s;
+    }
+
+    .ai-search-button:hover {
+      background: #1d4ed8;
+      transform: scale(1.04);
+      box-shadow:
+        0 4px 10px rgba(37, 99, 235, 0.25);
+    }
+
+    .ai-search-button:active {
+      transform: scale(0.95);
+    }
+
+    .ai-search-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
     .input-examples {
-      margin: 9px 0 0;
+      margin: 8px 0 0;
       padding: 0;
       color: #475569;
       font-size: 13px;
-      line-height: 1.7;
+      line-height: 1.65;
       list-style: none;
     }
 
@@ -277,41 +348,19 @@
       font-weight: 700;
     }
 
+    .input-examples ul {
+      margin: 2px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
     .input-examples li::before {
       content: "・";
     }
 
-    .ai-button {
-      display: block;
-      width: 100%;
-      margin-top: 14px;
-      padding: 11px 16px;
-      color: white;
-      font-size: 15px;
-      font-weight: 700;
-      background:
-        linear-gradient(
-          90deg,
-          #0057d9,
-          #2563eb
-        );
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition:
-        transform 0.2s,
-        box-shadow 0.2s;
-    }
-
-    .ai-button:hover {
-      transform: translateY(-1px);
-      box-shadow:
-        0 5px 12px rgba(37, 99, 235, 0.22);
-    }
-
     .error-message {
       display: none;
-      margin-top: 9px;
+      margin-top: 8px;
       color: #b91c1c;
       font-size: 13px;
       font-weight: 700;
@@ -320,29 +369,30 @@
     /* スマートフォン */
     @media (max-width: 650px) {
       header {
-        padding: 16px 20px;
+        padding: 15px 19px;
       }
 
       header h1 {
-        font-size: 23px;
+        font-size: 22px;
       }
 
       .container {
-        margin: 13px auto;
+        margin: 12px auto;
       }
 
       .main-card {
-        padding: 17px;
+        padding: 16px;
         border-radius: 13px;
       }
 
-      .condition-grid {
+      .range-section {
         grid-template-columns: 1fr;
-        gap: 2px;
+        gap: 9px;
       }
 
       .ai-box {
-        padding: 15px;
+        margin-top: 15px;
+        padding: 14px;
       }
     }
   </style>
@@ -382,13 +432,13 @@
             id="keyword"
             name="keyword"
             autocomplete="off"
-            aria-label="授業名や先生名などを入力"
+            aria-label="授業名や先生名を入力"
           >
 
           <button
             type="submit"
             class="search-icon-button"
-            aria-label="検索する"
+            aria-label="条件を検索する"
             title="検索する"
           >
             <svg
@@ -415,63 +465,36 @@
 
         </div>
 
-        <div class="condition-grid">
+        <!-- 割合スライダー -->
+        <div class="range-section">
 
-          <div class="condition-item">
-
-            <label for="attendance">
-              出席の厳しさ
-            </label>
-
-            <select
-              id="attendance"
-              name="attendance"
-            >
-              <option value="">
-                指定なし
-              </option>
-
-              <option value="厳しくない">
-                厳しくない
-              </option>
-
-              <option value="普通">
-                普通
-              </option>
-
-              <option value="厳しい">
-                厳しい
-              </option>
-            </select>
-
-          </div>
-
-          <div class="condition-item">
+          <!-- 試験割合 -->
+          <div class="range-card">
 
             <label for="testRange">
               試験割合
             </label>
 
-            <select id="testRange">
-              <option
-                value="0,100"
-                selected
-              >
-                指定なし
-              </option>
+            <div
+              class="range-value"
+              id="testValue"
+            >
+              100％以下
+            </div>
 
-              <option value="0,20">
-                20％以下
-              </option>
+            <input
+              type="range"
+              id="testRange"
+              min="0"
+              max="100"
+              step="10"
+              value="100"
+            >
 
-              <option value="21,50">
-                21～50％
-              </option>
-
-              <option value="51,100">
-                51％以上
-              </option>
-            </select>
+            <div class="range-scale">
+              <span>0％</span>
+              <span>100％</span>
+            </div>
 
             <input
               type="hidden"
@@ -489,32 +512,33 @@
 
           </div>
 
-          <div class="condition-item">
+          <!-- レポート割合 -->
+          <div class="range-card">
 
             <label for="reportRange">
               レポート割合
             </label>
 
-            <select id="reportRange">
-              <option
-                value="0,100"
-                selected
-              >
-                指定なし
-              </option>
+            <div
+              class="range-value"
+              id="reportValue"
+            >
+              100％以下
+            </div>
 
-              <option value="0,20">
-                20％以下
-              </option>
+            <input
+              type="range"
+              id="reportRange"
+              min="0"
+              max="100"
+              step="10"
+              value="100"
+            >
 
-              <option value="21,50">
-                21～50％
-              </option>
-
-              <option value="51,100">
-                51％以上
-              </option>
-            </select>
+            <div class="range-scale">
+              <span>0％</span>
+              <span>100％</span>
+            </div>
 
             <input
               type="hidden"
@@ -532,20 +556,63 @@
 
           </div>
 
+          <!-- 課題割合 -->
+          <div class="range-card">
+
+            <label for="assignmentRange">
+              課題割合
+            </label>
+
+            <div
+              class="range-value"
+              id="assignmentValue"
+            >
+              100％以下
+            </div>
+
+            <input
+              type="range"
+              id="assignmentRange"
+              min="0"
+              max="100"
+              step="10"
+              value="100"
+            >
+
+            <div class="range-scale">
+              <span>0％</span>
+              <span>100％</span>
+            </div>
+
+            <input
+              type="hidden"
+              id="minAssignment"
+              name="minAssignment"
+              value="0"
+            >
+
+            <input
+              type="hidden"
+              id="maxAssignment"
+              name="maxAssignment"
+              value="100"
+            >
+
+          </div>
+
         </div>
 
       </form>
-
-      <div class="divider">
-        または
-      </div>
 
       <!-- AI授業コンシェルジュ -->
       <section class="ai-box">
 
         <div class="ai-title-row">
 
-          <div class="ai-icon" aria-hidden="true">
+          <div
+            class="ai-icon"
+            aria-hidden="true"
+          >
             🤖
           </div>
 
@@ -568,10 +635,43 @@
           相談内容
         </label>
 
-        <textarea
-          id="aiText"
-          aria-describedby="aiError"
-        ></textarea>
+        <div class="ai-input-area">
+
+          <textarea
+            id="aiText"
+            aria-describedby="aiError"
+          ></textarea>
+
+          <button
+            type="button"
+            class="ai-search-button"
+            id="aiSubmitButton"
+            aria-label="AIに相談する"
+            title="AIに相談する"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle
+                cx="11"
+                cy="11"
+                r="7"
+                stroke="currentColor"
+                stroke-width="2"
+              ></circle>
+
+              <path
+                d="M16.5 16.5L21 21"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              ></path>
+            </svg>
+          </button>
+
+        </div>
 
         <div class="input-examples">
 
@@ -579,7 +679,7 @@
             入力例
           </div>
 
-          <ul class="input-examples">
+          <ul>
             <li>
               Pythonを使ったプログラミングを学びたい
             </li>
@@ -594,14 +694,6 @@
           </ul>
 
         </div>
-
-        <button
-          type="button"
-          class="ai-button"
-          id="aiSubmitButton"
-        >
-          AIにおすすめしてもらう
-        </button>
 
         <div
           id="aiError"
@@ -627,17 +719,26 @@
     const reportRange =
       document.getElementById("reportRange");
 
-    const minTest =
-      document.getElementById("minTest");
+    const assignmentRange =
+      document.getElementById("assignmentRange");
+
+    const testValue =
+      document.getElementById("testValue");
+
+    const reportValue =
+      document.getElementById("reportValue");
+
+    const assignmentValue =
+      document.getElementById("assignmentValue");
 
     const maxTest =
       document.getElementById("maxTest");
 
-    const minReport =
-      document.getElementById("minReport");
-
     const maxReport =
       document.getElementById("maxReport");
+
+    const maxAssignment =
+      document.getElementById("maxAssignment");
 
     const aiText =
       document.getElementById("aiText");
@@ -649,30 +750,51 @@
       document.getElementById("aiError");
 
     /*
-      試験割合・レポート割合を
-      results.html が使用する形式へ変換
+      スライダーの数値を表示し、
+      results.htmlへ送る値を更新
     */
     function updateRangeValues() {
-      const [selectedMinTest, selectedMaxTest] =
-        testRange.value.split(",");
+      const test =
+        Number(testRange.value);
 
-      const [selectedMinReport, selectedMaxReport] =
-        reportRange.value.split(",");
+      const report =
+        Number(reportRange.value);
 
-      minTest.value = selectedMinTest;
-      maxTest.value = selectedMaxTest;
+      const assignment =
+        Number(assignmentRange.value);
 
-      minReport.value = selectedMinReport;
-      maxReport.value = selectedMaxReport;
+      testValue.textContent =
+        test === 100
+          ? "指定なし"
+          : test + "％以下";
+
+      reportValue.textContent =
+        report === 100
+          ? "指定なし"
+          : report + "％以下";
+
+      assignmentValue.textContent =
+        assignment === 100
+          ? "指定なし"
+          : assignment + "％以下";
+
+      maxTest.value = test;
+      maxReport.value = report;
+      maxAssignment.value = assignment;
     }
 
     testRange.addEventListener(
-      "change",
+      "input",
       updateRangeValues
     );
 
     reportRange.addEventListener(
-      "change",
+      "input",
+      updateRangeValues
+    );
+
+    assignmentRange.addEventListener(
+      "input",
       updateRangeValues
     );
 
@@ -687,7 +809,8 @@
       AI相談ページへ移動
     */
     function openAiPage() {
-      const text = aiText.value.trim();
+      const text =
+        aiText.value.trim();
 
       if (!text) {
         aiError.style.display = "block";
@@ -710,8 +833,7 @@
     );
 
     /*
-      AI相談欄では
-      Ctrl＋Enter または Command＋Enterで送信
+      Ctrl＋Enter、またはCommand＋EnterでAI相談
     */
     aiText.addEventListener(
       "keydown",
