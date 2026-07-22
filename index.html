@@ -16,6 +16,15 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --main-blue: #2563eb;
+      --dark-blue: #1d4ed8;
+      --light-blue: #eff6ff;
+      --border-color: #cbd5e1;
+      --text-color: #111827;
+      --sub-text: #475569;
+    }
+
     body {
       margin: 0;
       font-family:
@@ -23,7 +32,7 @@
         "Yu Gothic",
         "Meiryo",
         sans-serif;
-      color: #111827;
+      color: var(--text-color);
       background: #f4f7fb;
     }
 
@@ -52,7 +61,7 @@
 
     /* ページ全体 */
     .container {
-      width: min(760px, calc(100% - 28px));
+      width: min(800px, calc(100% - 28px));
       margin: 16px auto;
     }
 
@@ -76,7 +85,7 @@
       font-weight: 700;
     }
 
-    /* キーワード検索 */
+    /* キーワード検索欄 */
     .keyword-search {
       display: flex;
       align-items: center;
@@ -84,7 +93,7 @@
       height: 45px;
       overflow: hidden;
       background: white;
-      border: 1px solid #cbd5e1;
+      border: 1px solid var(--border-color);
       border-radius: 11px;
       transition:
         border-color 0.2s,
@@ -92,31 +101,32 @@
     }
 
     .keyword-search:focus-within {
-      border-color: #2563eb;
+      border-color: var(--main-blue);
       box-shadow:
         0 0 0 3px rgba(37, 99, 235, 0.12);
     }
 
     .keyword-search input {
       flex: 1;
-      height: 100%;
       min-width: 0;
+      height: 100%;
       padding: 0 13px;
       font-size: 15px;
+      background: transparent;
       border: none;
       outline: none;
-      background: transparent;
     }
 
-    /* 共通の虫眼鏡ボタン */
+    /* 共通虫眼鏡ボタン */
     .search-icon-button {
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
       width: 48px;
       height: 100%;
       padding: 0;
-      color: #2563eb;
+      color: var(--main-blue);
       background: transparent;
       border: none;
       cursor: pointer;
@@ -127,12 +137,12 @@
     }
 
     .search-icon-button:hover {
-      color: #1d4ed8;
-      background: #eff6ff;
+      color: var(--dark-blue);
+      background: var(--light-blue);
     }
 
     .search-icon-button:active {
-      transform: scale(0.94);
+      transform: scale(0.93);
     }
 
     .search-icon-button:focus-visible {
@@ -145,81 +155,190 @@
       height: 21px;
     }
 
-    /* 割合スライダー */
+    /* 範囲指定エリア */
     .range-section {
       display: grid;
       grid-template-columns:
         repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      margin-top: 9px;
+      gap: 13px;
+      margin-top: 12px;
     }
 
     .range-card {
-      padding: 12px;
+      min-width: 0;
+      padding: 13px;
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 11px;
     }
 
     .range-card label {
-      margin: 0 0 8px;
+      margin: 0;
     }
 
     .range-value {
-      margin-bottom: 5px;
-      color: #2563eb;
-      font-size: 14px;
+      min-height: 21px;
+      margin-top: 4px;
+      color: var(--main-blue);
+      font-size: 13px;
       font-weight: 700;
       text-align: right;
     }
 
-    input[type="range"] {
-      width: 100%;
-      height: 6px;
-      margin: 4px 0;
-      appearance: none;
-      -webkit-appearance: none;
-      background: #dbe4f0;
-      border-radius: 999px;
-      outline: none;
-      cursor: pointer;
+    /*
+      2つのrange入力を重ねて
+      両端に丸があるスライダーを作る
+    */
+    .dual-range {
+      position: relative;
+      height: 30px;
+      margin-top: 7px;
     }
 
-    input[type="range"]::-webkit-slider-thumb {
+    .slider-track,
+    .slider-selected {
+      position: absolute;
+      top: 13px;
+      right: 0;
+      left: 0;
+      height: 5px;
+      border-radius: 999px;
+    }
+
+    .slider-track {
+      background: #dbe4f0;
+    }
+
+    .slider-selected {
+      background: var(--main-blue);
+    }
+
+    .dual-range input[type="range"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      margin: 0;
+      padding: 0;
+      appearance: none;
+      -webkit-appearance: none;
+      pointer-events: none;
+      background: transparent;
+      outline: none;
+    }
+
+    .dual-range input[type="range"]::-webkit-slider-runnable-track {
+      height: 5px;
+      background: transparent;
+    }
+
+    .dual-range input[type="range"]::-webkit-slider-thumb {
       width: 18px;
       height: 18px;
+      margin-top: -6.5px;
       appearance: none;
       -webkit-appearance: none;
-      background: #2563eb;
+      pointer-events: auto;
+      background: var(--main-blue);
       border: 3px solid white;
       border-radius: 50%;
       box-shadow:
-        0 1px 5px rgba(15, 23, 42, 0.3);
+        0 1px 5px rgba(15, 23, 42, 0.35);
       cursor: pointer;
     }
 
-    input[type="range"]::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      background: #2563eb;
+    .dual-range input[type="range"]::-moz-range-track {
+      height: 5px;
+      background: transparent;
+    }
+
+    .dual-range input[type="range"]::-moz-range-thumb {
+      width: 13px;
+      height: 13px;
+      pointer-events: auto;
+      background: var(--main-blue);
       border: 3px solid white;
       border-radius: 50%;
       box-shadow:
-        0 1px 5px rgba(15, 23, 42, 0.3);
+        0 1px 5px rgba(15, 23, 42, 0.35);
       cursor: pointer;
     }
 
     .range-scale {
       display: flex;
       justify-content: space-between;
-      margin-top: 2px;
+      margin-top: 1px;
       color: #64748b;
       font-size: 11px;
     }
 
+    /* チェックボックス */
+    .evaluation-options {
+      margin-top: 13px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 11px;
+    }
+
+    .evaluation-options-title {
+      margin: 0 0 9px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .check-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+    }
+
+    .check-item {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .check-item input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+
+    .check-label {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 6px 11px;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 600;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      transition:
+        color 0.2s,
+        background 0.2s,
+        border-color 0.2s;
+    }
+
+    .check-item input:checked + .check-label {
+      color: white;
+      background: var(--main-blue);
+      border-color: var(--main-blue);
+    }
+
+    .check-item input:focus-visible + .check-label {
+      outline: 3px solid rgba(37, 99, 235, 0.2);
+    }
+
     /* AIコンシェルジュ */
     .ai-box {
-      margin-top: 18px;
+      margin-top: 17px;
       padding: 17px;
       background:
         linear-gradient(
@@ -234,22 +353,33 @@
     .ai-title-row {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 10px;
       margin-bottom: 4px;
     }
 
+    /* AIアイコン */
     .ai-icon {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 34px;
-      height: 34px;
       flex-shrink: 0;
-      font-size: 18px;
-      background: white;
-      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      color: white;
+      background:
+        linear-gradient(
+          135deg,
+          #2563eb,
+          #4f46e5
+        );
+      border-radius: 10px;
       box-shadow:
-        0 2px 8px rgba(37, 99, 235, 0.12);
+        0 4px 10px rgba(37, 99, 235, 0.22);
+    }
+
+    .ai-icon svg {
+      width: 21px;
+      height: 21px;
     }
 
     .ai-title {
@@ -266,81 +396,56 @@
     }
 
     .ai-description {
-      margin: 0 0 10px;
-      color: #475569;
+      margin: 0 0 9px;
+      color: var(--sub-text);
       font-size: 13px;
       line-height: 1.6;
     }
 
+    .ai-input-area {
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 11px;
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+    }
+
+    .ai-input-area:focus-within {
+      border-color: var(--main-blue);
+      box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
     textarea {
+      flex: 1;
       width: 100%;
+      min-width: 0;
       min-height: 87px;
       padding: 10px 12px;
       resize: vertical;
       font-family: inherit;
       font-size: 14px;
       line-height: 1.6;
-      background: white;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
+      background: transparent;
+      border: none;
       outline: none;
     }
 
-    textarea:focus {
-      border-color: #2563eb;
-      box-shadow:
-        0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    /* AI入力欄と虫眼鏡 */
-    .ai-input-area {
-      position: relative;
-    }
-
-    .ai-input-area textarea {
-      padding-right: 54px;
-    }
-
-    .ai-search-button {
-      position: absolute;
-      right: 7px;
-      bottom: 8px;
-      width: 40px;
-      height: 40px;
-      color: white;
-      background: #2563eb;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      transition:
-        background 0.2s,
-        transform 0.2s,
-        box-shadow 0.2s;
-    }
-
-    .ai-search-button:hover {
-      background: #1d4ed8;
-      transform: scale(1.04);
-      box-shadow:
-        0 4px 10px rgba(37, 99, 235, 0.25);
-    }
-
-    .ai-search-button:active {
-      transform: scale(0.95);
-    }
-
-    .ai-search-button svg {
-      width: 20px;
-      height: 20px;
+    .ai-input-area .search-icon-button {
+      width: 48px;
+      min-height: 87px;
+      border-left: 1px solid #e2e8f0;
     }
 
     .input-examples {
-      margin: 8px 0 0;
-      padding: 0;
-      color: #475569;
+      margin-top: 8px;
+      color: var(--sub-text);
       font-size: 13px;
       line-height: 1.65;
-      list-style: none;
     }
 
     .input-examples-title {
@@ -367,7 +472,7 @@
     }
 
     /* スマートフォン */
-    @media (max-width: 650px) {
+    @media (max-width: 680px) {
       header {
         padding: 15px 19px;
       }
@@ -388,6 +493,16 @@
       .range-section {
         grid-template-columns: 1fr;
         gap: 9px;
+      }
+
+      .check-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .check-label {
+        justify-content: center;
+        width: 100%;
       }
 
       .ai-box {
@@ -412,7 +527,6 @@
 
     <section class="main-card">
 
-      <!-- 条件検索 -->
       <h2>条件から探す</h2>
 
       <form
@@ -441,21 +555,22 @@
             aria-label="条件を検索する"
             title="検索する"
           >
+            <!-- 共通の虫眼鏡アイコン -->
             <svg
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden="true"
             >
               <circle
-                cx="11"
-                cy="11"
-                r="7"
+                cx="10.8"
+                cy="10.8"
+                r="6.8"
                 stroke="currentColor"
                 stroke-width="2"
               ></circle>
 
               <path
-                d="M16.5 16.5L21 21"
+                d="M15.8 15.8L21 21"
                 stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
@@ -465,13 +580,13 @@
 
         </div>
 
-        <!-- 割合スライダー -->
+        <!-- 割合の範囲指定 -->
         <div class="range-section">
 
           <!-- 試験割合 -->
           <div class="range-card">
 
-            <label for="testRange">
+            <label>
               試験割合
             </label>
 
@@ -479,17 +594,39 @@
               class="range-value"
               id="testValue"
             >
-              100％以下
+              0％〜100％
             </div>
 
-            <input
-              type="range"
-              id="testRange"
-              min="0"
-              max="100"
-              step="10"
-              value="100"
+            <div
+              class="dual-range"
+              data-range-group="test"
             >
+              <div class="slider-track"></div>
+              <div
+                class="slider-selected"
+                id="testSelected"
+              ></div>
+
+              <input
+                type="range"
+                id="testMinRange"
+                min="0"
+                max="100"
+                step="10"
+                value="0"
+                aria-label="試験割合の最低値"
+              >
+
+              <input
+                type="range"
+                id="testMaxRange"
+                min="0"
+                max="100"
+                step="10"
+                value="100"
+                aria-label="試験割合の最高値"
+              >
+            </div>
 
             <div class="range-scale">
               <span>0％</span>
@@ -515,7 +652,7 @@
           <!-- レポート割合 -->
           <div class="range-card">
 
-            <label for="reportRange">
+            <label>
               レポート割合
             </label>
 
@@ -523,17 +660,39 @@
               class="range-value"
               id="reportValue"
             >
-              100％以下
+              0％〜100％
             </div>
 
-            <input
-              type="range"
-              id="reportRange"
-              min="0"
-              max="100"
-              step="10"
-              value="100"
+            <div
+              class="dual-range"
+              data-range-group="report"
             >
+              <div class="slider-track"></div>
+              <div
+                class="slider-selected"
+                id="reportSelected"
+              ></div>
+
+              <input
+                type="range"
+                id="reportMinRange"
+                min="0"
+                max="100"
+                step="10"
+                value="0"
+                aria-label="レポート割合の最低値"
+              >
+
+              <input
+                type="range"
+                id="reportMaxRange"
+                min="0"
+                max="100"
+                step="10"
+                value="100"
+                aria-label="レポート割合の最高値"
+              >
+            </div>
 
             <div class="range-scale">
               <span>0％</span>
@@ -559,7 +718,7 @@
           <!-- 課題割合 -->
           <div class="range-card">
 
-            <label for="assignmentRange">
+            <label>
               課題割合
             </label>
 
@@ -567,17 +726,39 @@
               class="range-value"
               id="assignmentValue"
             >
-              100％以下
+              0％〜100％
             </div>
 
-            <input
-              type="range"
-              id="assignmentRange"
-              min="0"
-              max="100"
-              step="10"
-              value="100"
+            <div
+              class="dual-range"
+              data-range-group="assignment"
             >
+              <div class="slider-track"></div>
+              <div
+                class="slider-selected"
+                id="assignmentSelected"
+              ></div>
+
+              <input
+                type="range"
+                id="assignmentMinRange"
+                min="0"
+                max="100"
+                step="10"
+                value="0"
+                aria-label="課題割合の最低値"
+              >
+
+              <input
+                type="range"
+                id="assignmentMaxRange"
+                min="0"
+                max="100"
+                step="10"
+                value="100"
+                aria-label="課題割合の最高値"
+              >
+            </div>
 
             <div class="range-scale">
               <span>0％</span>
@@ -602,6 +783,63 @@
 
         </div>
 
+        <!-- その他の評価方法 -->
+        <div class="evaluation-options">
+
+          <p class="evaluation-options-title">
+            その他の評価方法を含む
+          </p>
+
+          <div class="check-list">
+
+            <label class="check-item">
+              <input
+                type="checkbox"
+                name="includePresentation"
+                value="1"
+              >
+              <span class="check-label">
+                発表
+              </span>
+            </label>
+
+            <label class="check-item">
+              <input
+                type="checkbox"
+                name="includePractice"
+                value="1"
+              >
+              <span class="check-label">
+                演習
+              </span>
+            </label>
+
+            <label class="check-item">
+              <input
+                type="checkbox"
+                name="includeQuiz"
+                value="1"
+              >
+              <span class="check-label">
+                小テスト
+              </span>
+            </label>
+
+            <label class="check-item">
+              <input
+                type="checkbox"
+                name="includeOther"
+                value="1"
+              >
+              <span class="check-label">
+                その他
+              </span>
+            </label>
+
+          </div>
+
+        </div>
+
       </form>
 
       <!-- AI授業コンシェルジュ -->
@@ -613,7 +851,25 @@
             class="ai-icon"
             aria-hidden="true"
           >
-            🤖
+            <!-- AI・推薦を表す星型アイコン -->
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M12 3L13.6 8.4L19 10L13.6 11.6L12 17L10.4 11.6L5 10L10.4 8.4L12 3Z"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linejoin="round"
+              ></path>
+
+              <path
+                d="M18.5 15L19.3 17.7L22 18.5L19.3 19.3L18.5 22L17.7 19.3L15 18.5L17.7 17.7L18.5 15Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
           </div>
 
           <h2 class="ai-title">
@@ -644,26 +900,27 @@
 
           <button
             type="button"
-            class="ai-search-button"
+            class="search-icon-button"
             id="aiSubmitButton"
             aria-label="AIに相談する"
             title="AIに相談する"
           >
+            <!-- 上と同じ虫眼鏡アイコン -->
             <svg
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden="true"
             >
               <circle
-                cx="11"
-                cy="11"
-                r="7"
+                cx="10.8"
+                cy="10.8"
+                r="6.8"
                 stroke="currentColor"
                 stroke-width="2"
               ></circle>
 
               <path
-                d="M16.5 16.5L21 21"
+                d="M15.8 15.8L21 21"
                 stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
@@ -713,33 +970,134 @@
     const searchForm =
       document.getElementById("searchForm");
 
-    const testRange =
-      document.getElementById("testRange");
+    /*
+      両端スライダーを設定する関数
+    */
+    function setupDualRange(config) {
+      const minSlider =
+        document.getElementById(config.minSliderId);
 
-    const reportRange =
-      document.getElementById("reportRange");
+      const maxSlider =
+        document.getElementById(config.maxSliderId);
 
-    const assignmentRange =
-      document.getElementById("assignmentRange");
+      const minHidden =
+        document.getElementById(config.minHiddenId);
 
-    const testValue =
-      document.getElementById("testValue");
+      const maxHidden =
+        document.getElementById(config.maxHiddenId);
 
-    const reportValue =
-      document.getElementById("reportValue");
+      const valueDisplay =
+        document.getElementById(config.valueDisplayId);
 
-    const assignmentValue =
-      document.getElementById("assignmentValue");
+      const selectedTrack =
+        document.getElementById(config.selectedTrackId);
 
-    const maxTest =
-      document.getElementById("maxTest");
+      function updateRange(changedSlider) {
+        let minValue =
+          Number(minSlider.value);
 
-    const maxReport =
-      document.getElementById("maxReport");
+        let maxValue =
+          Number(maxSlider.value);
 
-    const maxAssignment =
-      document.getElementById("maxAssignment");
+        /*
+          最低値が最高値を超えないようにする
+        */
+        if (minValue > maxValue) {
+          if (changedSlider === minSlider) {
+            maxValue = minValue;
+            maxSlider.value = String(maxValue);
+          } else {
+            minValue = maxValue;
+            minSlider.value = String(minValue);
+          }
+        }
 
+        minHidden.value = String(minValue);
+        maxHidden.value = String(maxValue);
+
+        /*
+          表示テキスト
+        */
+        if (minValue === 0 && maxValue === 0) {
+          valueDisplay.textContent =
+            config.noneText;
+        } else if (
+          minValue === 0 &&
+          maxValue === 100
+        ) {
+          valueDisplay.textContent =
+            "指定なし";
+        } else if (minValue === maxValue) {
+          valueDisplay.textContent =
+            minValue + "％";
+        } else {
+          valueDisplay.textContent =
+            minValue +
+            "％〜" +
+            maxValue +
+            "％";
+        }
+
+        /*
+          青く表示する範囲を更新
+        */
+        selectedTrack.style.left =
+          minValue + "%";
+
+        selectedTrack.style.right =
+          (100 - maxValue) + "%";
+      }
+
+      minSlider.addEventListener(
+        "input",
+        function () {
+          updateRange(minSlider);
+        }
+      );
+
+      maxSlider.addEventListener(
+        "input",
+        function () {
+          updateRange(maxSlider);
+        }
+      );
+
+      updateRange();
+    }
+
+    setupDualRange({
+      minSliderId: "testMinRange",
+      maxSliderId: "testMaxRange",
+      minHiddenId: "minTest",
+      maxHiddenId: "maxTest",
+      valueDisplayId: "testValue",
+      selectedTrackId: "testSelected",
+      noneText: "試験なし"
+    });
+
+    setupDualRange({
+      minSliderId: "reportMinRange",
+      maxSliderId: "reportMaxRange",
+      minHiddenId: "minReport",
+      maxHiddenId: "maxReport",
+      valueDisplayId: "reportValue",
+      selectedTrackId: "reportSelected",
+      noneText: "レポートなし"
+    });
+
+    setupDualRange({
+      minSliderId: "assignmentMinRange",
+      maxSliderId: "assignmentMaxRange",
+      minHiddenId: "minAssignment",
+      maxHiddenId: "maxAssignment",
+      valueDisplayId: "assignmentValue",
+      selectedTrackId: "assignmentSelected",
+      noneText: "課題なし"
+    });
+
+    /*
+      AI相談ページへの移動
+    */
     const aiText =
       document.getElementById("aiText");
 
@@ -749,65 +1107,6 @@
     const aiError =
       document.getElementById("aiError");
 
-    /*
-      スライダーの数値を表示し、
-      results.htmlへ送る値を更新
-    */
-    function updateRangeValues() {
-      const test =
-        Number(testRange.value);
-
-      const report =
-        Number(reportRange.value);
-
-      const assignment =
-        Number(assignmentRange.value);
-
-      testValue.textContent =
-        test === 100
-          ? "指定なし"
-          : test + "％以下";
-
-      reportValue.textContent =
-        report === 100
-          ? "指定なし"
-          : report + "％以下";
-
-      assignmentValue.textContent =
-        assignment === 100
-          ? "指定なし"
-          : assignment + "％以下";
-
-      maxTest.value = test;
-      maxReport.value = report;
-      maxAssignment.value = assignment;
-    }
-
-    testRange.addEventListener(
-      "input",
-      updateRangeValues
-    );
-
-    reportRange.addEventListener(
-      "input",
-      updateRangeValues
-    );
-
-    assignmentRange.addEventListener(
-      "input",
-      updateRangeValues
-    );
-
-    searchForm.addEventListener(
-      "submit",
-      function () {
-        updateRangeValues();
-      }
-    );
-
-    /*
-      AI相談ページへ移動
-    */
     function openAiPage() {
       const text =
         aiText.value.trim();
@@ -820,11 +1119,9 @@
 
       aiError.style.display = "none";
 
-      const url =
+      window.location.href =
         "ai.html?text=" +
         encodeURIComponent(text);
-
-      window.location.href = url;
     }
 
     aiSubmitButton.addEventListener(
@@ -833,7 +1130,7 @@
     );
 
     /*
-      Ctrl＋Enter、またはCommand＋EnterでAI相談
+      Ctrl＋EnterまたはCommand＋Enterでも送信
     */
     aiText.addEventListener(
       "keydown",
@@ -857,7 +1154,17 @@
       }
     );
 
-    updateRangeValues();
+    /*
+      検索直前に値が入っていることを確認
+    */
+    searchForm.addEventListener(
+      "submit",
+      function () {
+        console.log(
+          "条件検索を実行します"
+        );
+      }
+    );
   </script>
 
 </body>
