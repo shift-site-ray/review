@@ -1,329 +1,743 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<title>最適授業サーチ</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<style>
-*{box-sizing:border-box}
+  <title>最適授業サーチ</title>
 
-body{
-  margin:0;
-  font-family:"Segoe UI",sans-serif;
-  background:#f4f7fb;
-  color:#111827;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-header{
-  background:linear-gradient(90deg,#003b8f,#0057d9);
-  color:white;
-  padding:28px 36px;
-  text-align:center;
-}
+    body {
+      margin: 0;
+      font-family:
+        "Segoe UI",
+        "Yu Gothic",
+        "Meiryo",
+        sans-serif;
+      background: #f4f7fb;
+      color: #111827;
+    }
 
-header h1{
-  margin:0;
-  font-size:34px;
-}
+    /* ヘッダー */
+    header {
+      padding: 18px 32px;
+      color: white;
+      background:
+        linear-gradient(
+          90deg,
+          #003b8f,
+          #0057d9
+        );
+    }
 
-header p{
-  margin:8px 0 0;
-  font-size:15px;
-}
+    header h1 {
+      margin: 0;
+      font-size: 26px;
+    }
 
-.container{
-  max-width:760px;
-  margin:32px auto;
-  padding:0 20px;
-}
+    header p {
+      margin: 4px 0 0;
+      font-size: 14px;
+      opacity: 0.95;
+    }
 
-.search-card{
-  background:white;
-  border-radius:18px;
-  padding:28px;
-  box-shadow:0 4px 16px rgba(0,0,0,.08);
-}
+    /* 全体 */
+    .container {
+      width: min(760px, calc(100% - 28px));
+      margin: 18px auto;
+    }
 
-.section-title{
-  font-size:22px;
-  font-weight:900;
-  margin:0 0 8px;
-}
+    .main-card {
+      padding: 22px;
+      background: white;
+      border-radius: 16px;
+      box-shadow:
+        0 5px 18px rgba(15, 23, 42, 0.08);
+    }
 
-.section-sub{
-  color:#64748b;
-  font-size:14px;
-  line-height:1.7;
-  margin:0 0 18px;
-}
+    h2 {
+      margin: 0 0 16px;
+      font-size: 21px;
+    }
 
-label{
-  display:block;
-  font-weight:800;
-  margin-top:22px;
-  margin-bottom:8px;
-}
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      font-size: 14px;
+      font-weight: 700;
+    }
 
-input,select,textarea{
-  width:100%;
-  padding:13px;
-  border:1px solid #d6dce5;
-  border-radius:10px;
-  font-size:15px;
-  font-family:inherit;
-}
+    /* キーワード検索 */
+    .keyword-search {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 46px;
+      overflow: hidden;
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 11px;
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+    }
 
-textarea{
-  min-height:120px;
-  resize:vertical;
-}
+    .keyword-search:focus-within {
+      border-color: #2563eb;
+      box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
 
-.range-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+    .keyword-search input {
+      flex: 1;
+      height: 100%;
+      min-width: 0;
+      padding: 0 13px;
+      font-size: 15px;
+      border: none;
+      outline: none;
+      background: transparent;
+    }
 
-.range-value{
-  font-weight:800;
-  color:#0057d9;
-}
+    .search-icon-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 100%;
+      padding: 0;
+      color: #2563eb;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition:
+        color 0.2s,
+        background 0.2s;
+    }
 
-.slider{
-  margin:20px 8px 12px;
-}
+    .search-icon-button:hover {
+      color: #1d4ed8;
+      background: #eff6ff;
+    }
 
-.noUi-connect{
-  background:#0057d9;
-}
+    .search-icon-button:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, 0.25);
+      outline-offset: -3px;
+    }
 
-.noUi-handle{
-  border-radius:50%;
-  width:22px!important;
-  height:22px!important;
-  right:-11px!important;
-  top:-3px!important;
-  border:3px solid white;
-  background:#0057d9;
-  box-shadow:0 0 0 2px #0057d9;
-}
+    .search-icon-button svg {
+      width: 21px;
+      height: 21px;
+    }
 
-.noUi-handle:before,
-.noUi-handle:after{
-  display:none;
-}
+    /* 条件欄 */
+    .condition-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 5px;
+    }
 
-button{
-  width:100%;
-  margin-top:28px;
-  padding:14px;
-  border:none;
-  border-radius:10px;
-  background:#0057d9;
-  color:white;
-  font-size:17px;
-  font-weight:800;
-  cursor:pointer;
-}
+    .condition-item label {
+      margin-top: 10px;
+    }
 
-button:hover{
-  background:#0046b5;
-}
+    select {
+      width: 100%;
+      height: 42px;
+      padding: 0 10px;
+      font-size: 14px;
+      color: #111827;
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      outline: none;
+    }
 
-.reset{
-  margin-top:10px;
-  background:white;
-  color:#334155;
-  border:1px solid #cbd5e1;
-}
+    select:focus {
+      border-color: #2563eb;
+      box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
 
-.reset:hover{
-  background:#f8fafc;
-}
+    /* 区切り */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 22px 0;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 700;
+    }
 
-.note{
-  margin-top:18px;
-  background:#eef6ff;
-  color:#004299;
-  border:1px solid #93c5fd;
-  padding:14px;
-  border-radius:10px;
-  font-size:14px;
-  line-height:1.7;
-}
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
 
-.divider{
-  margin:34px 0;
-  border:none;
-  border-top:1px solid #e5e7eb;
-}
+    /* AI相談 */
+    .ai-box {
+      padding: 18px;
+      background:
+        linear-gradient(
+          135deg,
+          #f5f9ff,
+          #eef4ff
+        );
+      border: 1px solid #cfe0ff;
+      border-radius: 14px;
+    }
 
-.ai-box{
-  background:#f8fbff;
-  border:1px solid #bfdbfe;
-  border-radius:16px;
-  padding:22px;
-}
+    .ai-title-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 5px;
+    }
 
-.ai-label{
-  display:inline-block;
-  background:#e0ecff;
-  color:#1d4ed8;
-  font-weight:900;
-  padding:5px 10px;
-  border-radius:999px;
-  font-size:13px;
-  margin-bottom:10px;
-}
+    .ai-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      font-size: 18px;
+      background: white;
+      border-radius: 50%;
+      box-shadow:
+        0 2px 8px rgba(37, 99, 235, 0.12);
+    }
 
-.example{
-  font-size:13px;
-  color:#64748b;
-  line-height:1.7;
-  margin-top:8px;
-}
-</style>
+    .ai-title {
+      margin: 0;
+      color: #163c79;
+      font-size: 19px;
+    }
+
+    .ai-subtitle {
+      margin: 0 0 7px;
+      color: #334155;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .ai-description {
+      margin: 0 0 12px;
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 92px;
+      padding: 11px 12px;
+      resize: vertical;
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.6;
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .input-examples {
+      margin: 9px 0 0;
+      padding: 0;
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.7;
+      list-style: none;
+    }
+
+    .input-examples-title {
+      color: #334155;
+      font-weight: 700;
+    }
+
+    .input-examples li::before {
+      content: "・";
+    }
+
+    .ai-button {
+      display: block;
+      width: 100%;
+      margin-top: 14px;
+      padding: 11px 16px;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      background:
+        linear-gradient(
+          90deg,
+          #0057d9,
+          #2563eb
+        );
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+    }
+
+    .ai-button:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 5px 12px rgba(37, 99, 235, 0.22);
+    }
+
+    .error-message {
+      display: none;
+      margin-top: 9px;
+      color: #b91c1c;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* スマートフォン */
+    @media (max-width: 650px) {
+      header {
+        padding: 16px 20px;
+      }
+
+      header h1 {
+        font-size: 23px;
+      }
+
+      .container {
+        margin: 13px auto;
+      }
+
+      .main-card {
+        padding: 17px;
+        border-radius: 13px;
+      }
+
+      .condition-grid {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+
+      .ai-box {
+        padding: 15px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <h1>最適授業サーチ</h1>
-  <p>希望条件や相談文から、自分に合った授業を探せます</p>
-</header>
+  <header>
+    <h1>最適授業サーチ</h1>
 
-<div class="container">
-  <div class="search-card">
-
-    <h2 class="section-title">条件から探す</h2>
-    <p class="section-sub">
-      授業名・先生名・評価割合などを指定して、条件に合う授業を検索できます。
+    <p>
+      先輩レビューから、自分に合った授業選びをサポート
     </p>
+  </header>
 
-    <label>キーワード</label>
-    <input id="keyword" placeholder="例：Python、数学、レポート、吉田">
+  <main class="container">
 
-    <label>出席の厳しさ</label>
-    <select id="attendance" name="attendance">
-      <option value="">指定なし</option>
-      <option value="厳しい">厳しい</option>
-      <option value="普通">普通</option>
-      <option value="厳しくない">厳しくない</option>
-    </select>
+    <section class="main-card">
 
-    <label class="range-title">
-      <span>試験割合</span>
-      <span class="range-value" id="testText">0%〜100%</span>
-    </label>
-    <div id="testSlider" class="slider"></div>
+      <!-- 条件検索 -->
+      <h2>条件から探す</h2>
 
-    <label class="range-title">
-      <span>レポート割合</span>
-      <span class="range-value" id="reportText">0%〜100%</span>
-    </label>
-    <div id="reportSlider" class="slider"></div>
+      <form
+        id="searchForm"
+        action="results.html"
+        method="get"
+      >
 
-    <button onclick="goResults()">検索する</button>
-    <button class="reset" onclick="resetForm()">条件をリセット</button>
+        <label for="keyword">
+          キーワード
+        </label>
 
-    <div class="note">
-      例：試験なしがいい場合は「試験割合 0%〜0%」で検索できます。
-    </div>
+        <div class="keyword-search">
 
-    <hr class="divider">
+          <input
+            type="search"
+            id="keyword"
+            name="keyword"
+            autocomplete="off"
+            aria-label="授業名や先生名などを入力"
+          >
 
-    <div class="ai-box">
-      <div class="ai-label">AI授業相談</div>
+          <button
+            type="submit"
+            class="search-icon-button"
+            aria-label="検索する"
+            title="検索する"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle
+                cx="11"
+                cy="11"
+                r="7"
+                stroke="currentColor"
+                stroke-width="2"
+              ></circle>
 
-      <h2 class="section-title">文章で相談して探す</h2>
-      <p class="section-sub">
-        まだ条件がはっきり決まっていない場合は、希望を文章で入力するとおすすめ授業を提案します。
-      </p>
+              <path
+                d="M16.5 16.5L21 21"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              ></path>
+            </svg>
+          </button>
 
-      <label>相談内容</label>
-      <textarea id="aiText" placeholder="例：Pythonを使って学びたい。テストは苦手で、レポート中心がいい。将来IT系に進みたい。"></textarea>
+        </div>
 
-      <div class="example">
-        入力例：<br>
-        ・数学は好きだけど、テストが重い授業は避けたい<br>
-        ・Pythonやデータ分析を学びたい<br>
-        ・レポート中心で取りやすい授業を知りたい
+        <div class="condition-grid">
+
+          <div class="condition-item">
+
+            <label for="attendance">
+              出席の厳しさ
+            </label>
+
+            <select
+              id="attendance"
+              name="attendance"
+            >
+              <option value="">
+                指定なし
+              </option>
+
+              <option value="厳しくない">
+                厳しくない
+              </option>
+
+              <option value="普通">
+                普通
+              </option>
+
+              <option value="厳しい">
+                厳しい
+              </option>
+            </select>
+
+          </div>
+
+          <div class="condition-item">
+
+            <label for="testRange">
+              試験割合
+            </label>
+
+            <select id="testRange">
+              <option
+                value="0,100"
+                selected
+              >
+                指定なし
+              </option>
+
+              <option value="0,20">
+                20％以下
+              </option>
+
+              <option value="21,50">
+                21～50％
+              </option>
+
+              <option value="51,100">
+                51％以上
+              </option>
+            </select>
+
+            <input
+              type="hidden"
+              id="minTest"
+              name="minTest"
+              value="0"
+            >
+
+            <input
+              type="hidden"
+              id="maxTest"
+              name="maxTest"
+              value="100"
+            >
+
+          </div>
+
+          <div class="condition-item">
+
+            <label for="reportRange">
+              レポート割合
+            </label>
+
+            <select id="reportRange">
+              <option
+                value="0,100"
+                selected
+              >
+                指定なし
+              </option>
+
+              <option value="0,20">
+                20％以下
+              </option>
+
+              <option value="21,50">
+                21～50％
+              </option>
+
+              <option value="51,100">
+                51％以上
+              </option>
+            </select>
+
+            <input
+              type="hidden"
+              id="minReport"
+              name="minReport"
+              value="0"
+            >
+
+            <input
+              type="hidden"
+              id="maxReport"
+              name="maxReport"
+              value="100"
+            >
+
+          </div>
+
+        </div>
+
+      </form>
+
+      <div class="divider">
+        または
       </div>
 
-      <button onclick="goAI()">AIにおすすめしてもらう</button>
-    </div>
+      <!-- AI授業コンシェルジュ -->
+      <section class="ai-box">
 
-  </div>
-</div>
+        <div class="ai-title-row">
 
-<script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
+          <div class="ai-icon" aria-hidden="true">
+            🤖
+          </div>
 
-<script>
-const testSlider = document.getElementById("testSlider");
-const reportSlider = document.getElementById("reportSlider");
+          <h2 class="ai-title">
+            AI授業コンシェルジュ
+          </h2>
 
-noUiSlider.create(testSlider,{
-  start:[0,100],
-  connect:true,
-  step:10,
-  range:{min:0,max:100}
-});
+        </div>
 
-noUiSlider.create(reportSlider,{
-  start:[0,100],
-  connect:true,
-  step:10,
-  range:{min:0,max:100}
-});
+        <p class="ai-subtitle">
+          文章で相談して探す
+        </p>
 
-testSlider.noUiSlider.on("update", values=>{
-  document.getElementById("testText").textContent =
-    Math.round(values[0]) + "%〜" + Math.round(values[1]) + "%";
-});
+        <p class="ai-description">
+          まだ条件がはっきり決まっていない場合は、
+          希望を文章で入力するとおすすめ授業を提案します。
+        </p>
 
-reportSlider.noUiSlider.on("update", values=>{
-  document.getElementById("reportText").textContent =
-    Math.round(values[0]) + "%〜" + Math.round(values[1]) + "%";
-});
+        <label for="aiText">
+          相談内容
+        </label>
 
-function goResults(){
-  const keyword = encodeURIComponent(document.getElementById("keyword").value.trim());
-  const attendance = encodeURIComponent(document.getElementById("attendance").value);
+        <textarea
+          id="aiText"
+          aria-describedby="aiError"
+        ></textarea>
 
-  const testValues = testSlider.noUiSlider.get();
-  const reportValues = reportSlider.noUiSlider.get();
+        <div class="input-examples">
 
-  const minTest = Math.round(testValues[0]);
-  const maxTest = Math.round(testValues[1]);
-  const minReport = Math.round(reportValues[0]);
-  const maxReport = Math.round(reportValues[1]);
+          <div class="input-examples-title">
+            入力例
+          </div>
 
-  location.href =
-    `results.html?keyword=${keyword}&attendance=${attendance}&minTest=${minTest}&maxTest=${maxTest}&minReport=${minReport}&maxReport=${maxReport}`;
-}
+          <ul class="input-examples">
+            <li>
+              Pythonを使ったプログラミングを学びたい
+            </li>
 
-function goAI(){
-  const text = document.getElementById("aiText").value.trim();
+            <li>
+              データ分析やAIに関する授業を履修したい
+            </li>
 
-  if(text === ""){
-    alert("相談内容を入力してください。");
-    return;
-  }
+            <li>
+              レポートを中心に学習を進められる授業を探したい
+            </li>
+          </ul>
 
-  location.href = `ai.html?text=${encodeURIComponent(text)}`;
-}
+        </div>
 
-function resetForm(){
-  document.getElementById("keyword").value = "";
-  document.getElementById("attendance").value = "";
-  document.getElementById("aiText").value = "";
-  testSlider.noUiSlider.set([0,100]);
-  reportSlider.noUiSlider.set([0,100]);
-}
-</script>
+        <button
+          type="button"
+          class="ai-button"
+          id="aiSubmitButton"
+        >
+          AIにおすすめしてもらう
+        </button>
+
+        <div
+          id="aiError"
+          class="error-message"
+          role="alert"
+        >
+          相談内容を入力してください。
+        </div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+  <script>
+    const searchForm =
+      document.getElementById("searchForm");
+
+    const testRange =
+      document.getElementById("testRange");
+
+    const reportRange =
+      document.getElementById("reportRange");
+
+    const minTest =
+      document.getElementById("minTest");
+
+    const maxTest =
+      document.getElementById("maxTest");
+
+    const minReport =
+      document.getElementById("minReport");
+
+    const maxReport =
+      document.getElementById("maxReport");
+
+    const aiText =
+      document.getElementById("aiText");
+
+    const aiSubmitButton =
+      document.getElementById("aiSubmitButton");
+
+    const aiError =
+      document.getElementById("aiError");
+
+    /*
+      試験割合・レポート割合を
+      results.html が使用する形式へ変換
+    */
+    function updateRangeValues() {
+      const [selectedMinTest, selectedMaxTest] =
+        testRange.value.split(",");
+
+      const [selectedMinReport, selectedMaxReport] =
+        reportRange.value.split(",");
+
+      minTest.value = selectedMinTest;
+      maxTest.value = selectedMaxTest;
+
+      minReport.value = selectedMinReport;
+      maxReport.value = selectedMaxReport;
+    }
+
+    testRange.addEventListener(
+      "change",
+      updateRangeValues
+    );
+
+    reportRange.addEventListener(
+      "change",
+      updateRangeValues
+    );
+
+    searchForm.addEventListener(
+      "submit",
+      function () {
+        updateRangeValues();
+      }
+    );
+
+    /*
+      AI相談ページへ移動
+    */
+    function openAiPage() {
+      const text = aiText.value.trim();
+
+      if (!text) {
+        aiError.style.display = "block";
+        aiText.focus();
+        return;
+      }
+
+      aiError.style.display = "none";
+
+      const url =
+        "ai.html?text=" +
+        encodeURIComponent(text);
+
+      window.location.href = url;
+    }
+
+    aiSubmitButton.addEventListener(
+      "click",
+      openAiPage
+    );
+
+    /*
+      AI相談欄では
+      Ctrl＋Enter または Command＋Enterで送信
+    */
+    aiText.addEventListener(
+      "keydown",
+      function (event) {
+        if (
+          event.key === "Enter" &&
+          (event.ctrlKey || event.metaKey)
+        ) {
+          event.preventDefault();
+          openAiPage();
+        }
+      }
+    );
+
+    aiText.addEventListener(
+      "input",
+      function () {
+        if (aiText.value.trim()) {
+          aiError.style.display = "none";
+        }
+      }
+    );
+
+    updateRangeValues();
+  </script>
 
 </body>
+
 </html>
