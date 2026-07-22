@@ -1,887 +1,2087 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<title>最適授業サーチ｜検索結果</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
 
-<style>
-*{box-sizing:border-box}
+  <title>
+    最適授業サーチ｜検索結果
+  </title>
 
-body{
-  margin:0;
-  font-family:"Segoe UI",sans-serif;
-  background:#f4f7fb;
-  color:#111827;
-}
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-header{
-  background:linear-gradient(90deg,#003b8f,#0057d9);
-  color:white;
-  padding:22px 36px;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-header h1{
-  margin:0;
-  font-size:28px;
-}
+    :root {
+      --main-blue: #2563eb;
+      --dark-blue: #1d4ed8;
+      --light-blue: #eff6ff;
+      --border: #dbe2ea;
+      --text: #111827;
+      --sub-text: #475569;
+    }
 
-header p{
-  margin:6px 0 0;
-  font-size:14px;
-}
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family:
+        "Segoe UI",
+        "Yu Gothic",
+        "Meiryo",
+        sans-serif;
+      background: #f4f7fb;
+    }
 
-.container{
-  max-width:1050px;
-  margin:auto;
-  padding:24px;
-}
+    header {
+      padding: 22px 36px;
+      color: white;
+      background:
+        linear-gradient(
+          90deg,
+          #003b8f,
+          #0057d9
+        );
+    }
 
-.back{
-  display:inline-block;
-  margin-bottom:18px;
-  color:#2563eb;
-  text-decoration:none;
-  font-weight:700;
-}
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
 
-.result-title{
-  background:white;
-  padding:18px 22px;
-  border-radius:14px;
-  box-shadow:0 4px 14px rgba(0,0,0,.08);
-  margin-bottom:18px;
-}
+    header p {
+      margin: 6px 0 0;
+      font-size: 14px;
+    }
 
-.result-title h2{
-  margin:0;
-  font-size:18px;
-  font-weight:700;
-}
+    .container {
+      max-width: 1050px;
+      margin: auto;
+      padding: 24px;
+    }
 
-.course-slider{
-  display:flex;
-  gap:16px;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  padding:8px 4px 18px;
-  margin-bottom:6px;
-  scrollbar-width:thin;
-}
+    .back {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: var(--main-blue);
+      font-weight: 700;
+      text-decoration: none;
+    }
 
-.course-mini-card{
-  min-width:260px;
-  max-width:260px;
-  background:white;
-  border:1px solid #dbe2ea;
-  border-radius:16px;
-  padding:16px;
-  box-shadow:0 4px 14px rgba(0,0,0,.08);
-  scroll-snap-align:center;
-  cursor:pointer;
-  transition:.2s;
-}
+    .back:hover {
+      text-decoration: underline;
+    }
 
-.course-mini-card:hover{
-  transform:translateY(-2px);
-}
+    .result-title {
+      margin-bottom: 18px;
+      padding: 18px 22px;
+      background: white;
+      border-radius: 14px;
+      box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.08);
+    }
 
-.course-mini-card.active{
-  border:2px solid #2563eb;
-  box-shadow:0 6px 18px rgba(37,99,235,.20);
-}
+    .result-title h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
 
-.mini-title{
-  font-weight:800;
-  font-size:18px;
-  margin-bottom:6px;
-}
+    .condition-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 11px;
+    }
 
-.mini-teacher{
-  color:#475569;
-  font-size:13px;
-  margin-bottom:10px;
-}
+    .condition-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 9px;
+      color: #1e40af;
+      font-size: 12px;
+      font-weight: 700;
+      background: #e9f1ff;
+      border-radius: 999px;
+    }
 
-.mini-tags span{
-  display:inline-block;
-  background:#e9f1ff;
-  color:#1e40af;
-  padding:4px 7px;
-  border-radius:6px;
-  margin:3px 3px 0 0;
-  font-size:11px;
-}
+    .condition-empty {
+      color: #64748b;
+      font-size: 13px;
+    }
 
-.indicator{
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  margin:6px 0 22px;
-}
+    .course-slider {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      margin-bottom: 6px;
+      padding: 8px 4px 18px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: thin;
+    }
 
-.indicator-dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#cbd5e1;
-  transition:.2s;
-  cursor:pointer;
-}
+    .course-mini-card {
+      min-width: 260px;
+      max-width: 260px;
+      padding: 16px;
+      cursor: pointer;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.08);
+      scroll-snap-align: center;
+      transition:
+        transform 0.2s,
+        border-color 0.2s,
+        box-shadow 0.2s;
+    }
 
-.indicator-dot.active{
-  width:24px;
-  border-radius:999px;
-  background:#2563eb;
-}
+    .course-mini-card:hover {
+      transform: translateY(-2px);
+    }
 
-.card{
-  background:white;
-  padding:24px;
-  border-radius:16px;
-  margin-bottom:24px;
-  box-shadow:0 4px 14px rgba(0,0,0,.08);
-  border:1px solid #e5e7eb;
-}
+    .course-mini-card.active {
+      border: 2px solid var(--main-blue);
+      box-shadow:
+        0 6px 18px rgba(37, 99, 235, 0.2);
+    }
 
-.course-title{
-  font-size:26px;
-  font-weight:800;
-  margin:0;
-}
+    .mini-title {
+      margin-bottom: 6px;
+      font-size: 18px;
+      font-weight: 800;
+    }
 
-.teacher{
-  color:#475569;
-  margin:8px 0;
-}
+    .mini-teacher {
+      margin-bottom: 10px;
+      color: var(--sub-text);
+      font-size: 13px;
+    }
 
-.tags{
-  margin:14px 0;
-}
+    .mini-tags {
+      margin-top: 7px;
+    }
 
-.tag{
-  display:inline-block;
-  background:#e9f1ff;
-  color:#1e40af;
-  padding:5px 9px;
-  border-radius:6px;
-  margin:4px 4px 4px 0;
-  font-size:13px;
-}
+    .mini-tags span {
+      display: inline-block;
+      margin: 3px 3px 0 0;
+      padding: 4px 7px;
+      color: #1e40af;
+      font-size: 11px;
+      background: #e9f1ff;
+      border-radius: 6px;
+    }
 
-.course-body{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:24px;
-  margin-top:16px;
-}
+    .indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 6px 0 22px;
+    }
 
-.eval-row{
-  display:grid;
-  grid-template-columns:100px 1fr 50px;
-  align-items:center;
-  gap:10px;
-  margin:12px 0;
-}
+    .indicator-dot {
+      width: 8px;
+      height: 8px;
+      cursor: pointer;
+      background: #cbd5e1;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
 
-.bar-bg{
-  height:9px;
-  background:#e5e7eb;
-  border-radius:999px;
-  overflow:hidden;
-}
+    .indicator-dot.active {
+      width: 24px;
+      background: var(--main-blue);
+      border-radius: 999px;
+    }
 
-.bar{
-  height:9px;
-  background:#2563eb;
-  border-radius:999px;
-}
+    .card {
+      margin-bottom: 24px;
+      padding: 24px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.08);
+    }
 
-.attendance-box{
-  margin-top:12px;
-}
+    .course-title {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+    }
 
-.attendance-badge{
-  display:inline-block;
-  padding:6px 12px;
-  border-radius:999px;
-  font-weight:800;
-  font-size:14px;
-}
+    .teacher {
+      margin: 8px 0;
+      color: var(--sub-text);
+    }
 
-.attendance-ok{
-  background:#dcfce7;
-  color:#166534;
-}
+    .description {
+      margin: 14px 0 0;
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.7;
+    }
 
-.attendance-hard{
-  background:#fee2e2;
-  color:#991b1b;
-}
+    .tags {
+      margin: 14px 0;
+    }
 
-.attendance-depends{
-  background:#fef3c7;
-  color:#92400e;
-}
+    .tag {
+      display: inline-block;
+      margin: 4px 4px 4px 0;
+      padding: 5px 9px;
+      color: #1e40af;
+      font-size: 13px;
+      background: #e9f1ff;
+      border-radius: 6px;
+    }
 
-.attendance-unknown{
-  background:#e5e7eb;
-  color:#374151;
-}
+    .course-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 16px;
+    }
 
-.review-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:22px;
-  border-top:1px solid #e5e7eb;
-  padding-top:18px;
-}
+    .course-body h3 {
+      margin: 0 0 12px;
+    }
 
-.review-head h3{
-  margin:0;
-}
+    .eval-row {
+      display: grid;
+      grid-template-columns: 100px 1fr 50px;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0;
+    }
 
-.review-card{
-  display:grid;
-  grid-template-columns:90px 1fr;
-  gap:16px;
-  padding:16px;
-  margin-top:14px;
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  background:#fbfdff;
-}
+    .bar-bg {
+      height: 9px;
+      overflow: hidden;
+      background: #e5e7eb;
+      border-radius: 999px;
+    }
 
-.avatar{
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:#d8e0e8;
-  margin:0 auto;
-  position:relative;
-}
+    .bar {
+      height: 9px;
+      background: var(--main-blue);
+      border-radius: 999px;
+    }
 
-.avatar:before{
-  content:"";
-  position:absolute;
-  top:10px;
-  left:18px;
-  width:20px;
-  height:20px;
-  background:#71808f;
-  border-radius:50%;
-}
+    .attendance-box {
+      margin-top: 12px;
+    }
 
-.avatar:after{
-  content:"";
-  position:absolute;
-  bottom:7px;
-  left:10px;
-  width:36px;
-  height:21px;
-  background:#71808f;
-  border-radius:50% 50% 40% 40%;
-}
+    .attendance-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 800;
+      border-radius: 999px;
+    }
 
-.year{
-  text-align:center;
-  font-size:12px;
-  margin-top:7px;
-  color:#475569;
-}
+    .attendance-ok {
+      color: #166534;
+      background: #dcfce7;
+    }
 
-.year span{
-  display:inline-block;
-  background:#0057d9;
-  color:white;
-  padding:2px 9px;
-  border-radius:5px;
-  font-weight:700;
-  margin-top:3px;
-}
+    .attendance-hard {
+      color: #991b1b;
+      background: #fee2e2;
+    }
 
-.review-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:8px;
-}
+    .attendance-depends {
+      color: #92400e;
+      background: #fef3c7;
+    }
 
-.review-item{
-  background:#f1f5f9;
-  border:1px solid #dbe2ea;
-  padding:8px 10px;
-  border-radius:8px;
-  font-size:13px;
-}
+    .attendance-unknown {
+      color: #374151;
+      background: #e5e7eb;
+    }
 
-.stars{
-  color:#f59e0b;
-  font-weight:800;
-}
+    .review-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid #e5e7eb;
+    }
 
-.comment{
-  margin-top:12px;
-  line-height:1.7;
-}
+    .review-head h3 {
+      margin: 0;
+    }
 
-.empty{
-  color:#64748b;
-  background:#f8fafc;
-  padding:14px;
-  border-radius:10px;
-}
+    .review-card {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 16px;
+      margin-top: 14px;
+      padding: 16px;
+      background: #fbfdff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+    }
 
-.post-box{
-  margin-top:24px;
-  border-top:1px solid #e5e7eb;
-  padding-top:20px;
-}
+    .avatar {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      margin: 0 auto;
+      background: #d8e0e8;
+      border-radius: 50%;
+    }
 
-.post-box h3{
-  margin:0 0 12px;
-}
+    .avatar::before {
+      position: absolute;
+      top: 10px;
+      left: 18px;
+      width: 20px;
+      height: 20px;
+      content: "";
+      background: #71808f;
+      border-radius: 50%;
+    }
 
-.post-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
+    .avatar::after {
+      position: absolute;
+      bottom: 7px;
+      left: 10px;
+      width: 36px;
+      height: 21px;
+      content: "";
+      background: #71808f;
+      border-radius: 50% 50% 40% 40%;
+    }
 
-.post-field label{
-  display:block;
-  font-weight:700;
-  font-size:13px;
-  margin-bottom:6px;
-}
+    .year {
+      margin-top: 7px;
+      color: var(--sub-text);
+      font-size: 12px;
+      text-align: center;
+    }
 
-.post-field input,
-.post-field select,
-.post-field textarea{
-  width:100%;
-  padding:10px;
-  border:1px solid #cbd5e1;
-  border-radius:8px;
-  font-size:14px;
-  background:white;
-}
+    .year span {
+      display: inline-block;
+      margin-top: 3px;
+      padding: 2px 9px;
+      color: white;
+      font-weight: 700;
+      background: #0057d9;
+      border-radius: 5px;
+    }
 
-.post-field textarea{
-  min-height:100px;
-  resize:vertical;
-}
+    .review-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
 
-.post-field.full{
-  grid-column:1 / -1;
-}
+    .review-item {
+      padding: 8px 10px;
+      font-size: 13px;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
 
-.post-btn{
-  margin-top:14px;
-  background:#2563eb;
-  color:white;
-  border:none;
-  border-radius:9px;
-  padding:12px 18px;
-  font-size:15px;
-  font-weight:800;
-  cursor:pointer;
-}
+    .stars {
+      color: #f59e0b;
+      font-weight: 800;
+    }
 
-.post-btn:hover{
-  background:#1d4ed8;
-}
+    .comment {
+      margin-top: 12px;
+      line-height: 1.7;
+    }
 
-.post-note{
-  color:#64748b;
-  font-size:13px;
-  margin-top:8px;
-}
+    .empty {
+      margin-top: 14px;
+      padding: 14px;
+      color: #64748b;
+      background: #f8fafc;
+      border-radius: 10px;
+    }
 
-@media(max-width:800px){
-  .course-body{
-    grid-template-columns:1fr;
-  }
+    .post-box {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+    }
 
-  .review-card{
-    grid-template-columns:1fr;
-  }
+    .post-box h3 {
+      margin: 0 0 12px;
+    }
 
-  .review-grid{
-    grid-template-columns:1fr;
-  }
+    .post-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
 
-  .course-mini-card{
-    min-width:230px;
-    max-width:230px;
-  }
+    .post-field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
 
-  .post-grid{
-    grid-template-columns:1fr;
-  }
-}
-</style>
+    .post-field input,
+    .post-field select,
+    .post-field textarea {
+      width: 100%;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+
+    .post-field textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .post-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .post-btn {
+      margin-top: 14px;
+      padding: 12px 18px;
+      color: white;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--main-blue);
+      border: none;
+      border-radius: 9px;
+    }
+
+    .post-btn:hover {
+      background: var(--dark-blue);
+    }
+
+    .post-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+
+    .post-note {
+      margin-top: 8px;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .loading-card {
+      padding: 22px;
+      color: #475569;
+      text-align: center;
+      background: white;
+      border-radius: 14px;
+    }
+
+    @media (max-width: 800px) {
+      header {
+        padding: 18px 22px;
+      }
+
+      header h1 {
+        font-size: 24px;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      .course-body {
+        grid-template-columns: 1fr;
+      }
+
+      .review-card {
+        grid-template-columns: 1fr;
+      }
+
+      .review-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .course-mini-card {
+        min-width: 230px;
+        max-width: 230px;
+      }
+
+      .post-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .review-head {
+        align-items: flex-start;
+        gap: 8px;
+        flex-direction: column;
+      }
+
+      .eval-row {
+        grid-template-columns: 82px 1fr 44px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <h1>最適授業サーチ</h1>
-  <p>先輩レビューから、自分に合った授業選びをサポート</p>
-</header>
+  <header>
+    <h1>
+      最適授業サーチ
+    </h1>
 
-<div class="container">
+    <p>
+      先輩レビューから、自分に合った授業選びをサポート
+    </p>
+  </header>
 
-<a class="back" href="index.html">← 検索画面に戻る</a>
+  <main class="container">
 
-<div class="result-title">
-  <h2 id="resultCount">検索結果</h2>
-</div>
+    <a
+      class="back"
+      href="index.html"
+    >
+      ← 検索画面に戻る
+    </a>
 
-<div id="courseSlider" class="course-slider">読み込み中...</div>
-<div id="indicator" class="indicator"></div>
-<div id="courseDetail"></div>
+    <section class="result-title">
 
-</div>
+      <h2 id="resultCount">
+        検索結果
+      </h2>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  addDoc
-} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+      <div
+        id="conditionSummary"
+        class="condition-summary"
+      ></div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCs2G-LhqC8ZrkvK5QJtYHiMGAK6rKPh9E",
-  authDomain: "search-9aee7.firebaseapp.com",
-  projectId: "search-9aee7",
-  storageBucket: "search-9aee7.firebasestorage.app",
-  messagingSenderId: "541254473766",
-  appId: "1:541254473766:web:ea29fc67955cc0f4dfeee7"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-let classes = [];
-let reviews = [];
-let currentResults = [];
-let selectedIndex = 0;
-
-async function loadData(preferredClassId = null){
-  try{
-    const classResponse = await fetch("classes.json");
-    classes = await classResponse.json();
-
-    const snapshot = await getDocs(collection(db, "reviews"));
-    reviews = snapshot.docs.map(doc => ({
-      firestoreId: doc.id,
-      ...doc.data()
-    }));
-
-    searchClasses(preferredClassId);
-  }catch(error){
-    document.getElementById("courseSlider").innerHTML = "";
-    document.getElementById("courseDetail").innerHTML =
-      `<div class="card">データの読み込みに失敗しました。Firestore / classes.json を確認してください。</div>`;
-    console.error(error);
-  }
-}
-
-function stars(n){
-  if(n === null || n === undefined || n === ""){
-    return "未入力";
-  }
-
-  n = Number(n || 0);
-  return "★".repeat(n) + "☆".repeat(5-n);
-}
-
-function getEvaluation(c){
-  return c.evaluation || {};
-}
-
-function getEvalValue(c,names){
-  const ev = getEvaluation(c);
-  for(const name of names){
-    if(ev[name] !== undefined) return Number(ev[name]);
-  }
-  return 0;
-}
-
-function attendanceClass(value){
-  if(value === "厳しくない") return "attendance-ok";
-  if(value === "厳しい") return "attendance-hard";
-  if(value === "普通") return "attendance-depends";
-  return "attendance-unknown";
-}
-
-function mostCommonAttendance(classReviews){
-  if(classReviews.length === 0) return "不明";
-
-  const count = {};
-  classReviews.forEach(r=>{
-    const key = r.attendance || "不明";
-    count[key] = (count[key] || 0) + 1;
-  });
-
-  return Object.entries(count).sort((a,b)=>b[1]-a[1])[0][0];
-}
-
-function searchClasses(preferredClassId = null){
-  const params = new URLSearchParams(location.search);
-
-  const keyword = params.get("keyword") || "";
-  const attendance = params.get("attendance") || "";
-
-  const minTest = Number(params.get("minTest") || 0);
-  const maxTest = Number(params.get("maxTest") || 100);
-  const minReport = Number(params.get("minReport") || 0);
-  const maxReport = Number(params.get("maxReport") || 100);
-
-  const results = classes.filter(c=>{
-    const classReviews = reviews.filter(r=>Number(r.classId) === Number(c.id));
-
-    const text = [
-      c.name,
-      c.teacher,
-      c.description,
-      ...(c.tags || [])
-    ].join("");
-
-    const testRate = getEvalValue(c,["試験","テスト"]);
-    const reportRate = getEvalValue(c,["レポート"]);
-
-    const attendanceOK =
-      attendance === "" ||
-      classReviews.some(r=>r.attendance === attendance);
-
-    return (
-      testRate >= minTest &&
-      testRate <= maxTest &&
-      reportRate >= minReport &&
-      reportRate <= maxReport &&
-      attendanceOK &&
-      (keyword === "" || text.includes(keyword))
-    );
-  });
-
-  displayResults(results, preferredClassId);
-}
-
-function displayResults(results, preferredClassId = null){
-  currentResults = results;
-  selectedIndex = 0;
-
-  document.getElementById("resultCount").textContent =
-    `検索結果：${results.length}件`;
-
-  const slider = document.getElementById("courseSlider");
-  const indicator = document.getElementById("indicator");
-  const detail = document.getElementById("courseDetail");
-
-  slider.innerHTML = "";
-  indicator.innerHTML = "";
-  detail.innerHTML = "";
-
-  if(results.length === 0){
-    slider.style.display = "none";
-    indicator.style.display = "none";
-    detail.innerHTML = `<div class="card">条件に合う授業が見つかりませんでした。</div>`;
-    return;
-  }
-
-  slider.style.display = "flex";
-  indicator.style.display = "flex";
-
-  const preferredIndex = preferredClassId === null
-    ? 0
-    : Math.max(0, results.findIndex(c => Number(c.id) === Number(preferredClassId)));
-
-  selectedIndex = preferredIndex;
-
-  results.forEach((c,index)=>{
-    const classReviews = reviews.filter(r=>Number(r.classId) === Number(c.id));
-    const attendance = mostCommonAttendance(classReviews);
-
-    const mini = document.createElement("div");
-    mini.className = "course-mini-card" + (index === preferredIndex ? " active" : "");
-    mini.innerHTML = `
-      <div class="mini-title">${c.name}</div>
-      <div class="mini-teacher">${c.teacher}</div>
-      <div>
-        <span class="attendance-badge ${attendanceClass(attendance)}">${attendance}</span>
-      </div>
-      <div class="mini-tags">
-        ${(c.tags || []).slice(0,3).map(t=>`<span>${t}</span>`).join("")}
-      </div>
-    `;
-
-    mini.addEventListener("click",()=>{
-      selectCourse(index);
-      mini.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
-    });
-
-    slider.appendChild(mini);
-
-    const dot = document.createElement("div");
-    dot.className = "indicator-dot" + (index === preferredIndex ? " active" : "");
-    dot.addEventListener("click",()=>{
-      selectCourse(index);
-      slider.children[index].scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
-    });
-
-    indicator.appendChild(dot);
-  });
-
-  renderDetail(preferredIndex);
-
-  setTimeout(()=>{
-    if(slider.children[preferredIndex]){
-      slider.children[preferredIndex].scrollIntoView({
-        behavior:"smooth",
-        inline:"center",
-        block:"nearest"
-      });
-    }
-  }, 100);
-}
-
-function selectCourse(index){
-  selectedIndex = index;
-
-  document.querySelectorAll(".course-mini-card").forEach((card,i)=>{
-    card.classList.toggle("active", i === index);
-  });
-
-  document.querySelectorAll(".indicator-dot").forEach((dot,i)=>{
-    dot.classList.toggle("active", i === index);
-  });
-
-  renderDetail(index);
-}
-
-function renderDetail(index){
-  const c = currentResults[index];
-  const classReviews = reviews.filter(r=>Number(r.classId) === Number(c.id));
-  const ev = getEvaluation(c);
-  const attendance = mostCommonAttendance(classReviews);
-
-  const evaluationHtml = Object.entries(ev).map(([name,value])=>`
-    <div class="eval-row">
-      <div>${name}</div>
-      <div class="bar-bg">
-        <div class="bar" style="width:${value}%"></div>
-      </div>
-      <div>${value}%</div>
-    </div>
-  `).join("");
-
-  const reviewHtml = classReviews.map(r=>`
-    <div class="review-card">
-      <div>
-        <div class="avatar"></div>
-        <div class="year">
-          学籍番号上二桁<br>
-          <span>${r.studentYear || "24"}</span>
-        </div>
-      </div>
-
-      <div>
-        <div>
-          <strong>出席の厳しさ：</strong>
-          <span class="attendance-badge ${attendanceClass(r.attendance)}">
-            ${r.attendance || "不明"}
-          </span>
-        </div>
-
-        <div class="review-grid">
-          <div class="review-item">テスト難易度：<span class="stars">${stars(r.testDifficulty)}</span></div>
-          <div class="review-item">レポート難易度：<span class="stars">${stars(r.reportDifficulty)}</span></div>
-          <div class="review-item">レポート量：<span class="stars">${stars(r.reportAmount)}</span></div>
-          <div class="review-item">課題難易度：<span class="stars">${stars(r.assignmentDifficulty)}</span></div>
-          <div class="review-item">課題量：<span class="stars">${stars(r.assignmentAmount)}</span></div>
-        </div>
-
-        <div class="comment">
-          <strong>先輩レビュー：</strong><br>
-          ${r.comment || ""}
-        </div>
-      </div>
-    </div>
-  `).join("");
-
-  document.getElementById("courseDetail").innerHTML = `
-    <section class="card">
-      <h2 class="course-title">${c.name}</h2>
-      <p class="teacher"><strong>先生：</strong>${c.teacher}</p>
-
-      <div class="tags">
-        ${(c.tags || []).map(t=>`<span class="tag">${t}</span>`).join("")}
-      </div>
-
-      <div class="course-body">
-        <div>
-          <h3>評価方法の割合</h3>
-          ${evaluationHtml}
-        </div>
-
-        <div>
-          <h3>出席の厳しさ</h3>
-          <div class="attendance-box">
-            <span class="attendance-badge ${attendanceClass(attendance)}">
-              ${attendance}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="review-head">
-        <h3>先輩レビュー</h3>
-        <span>レビュー数：${classReviews.length}件</span>
-      </div>
-
-      ${reviewHtml || `<div class="empty">まだレビューがありません。</div>`}
-
-      ${postFormHtml(c.id)}
     </section>
-  `;
-}
 
-function postFormHtml(classId){
-  return `
-    <div class="post-box">
-      <h3>口コミを投稿する</h3>
-
-      <div class="post-grid">
-        <div class="post-field">
-          <label>学籍番号上二桁</label>
-          <input id="postStudentYear" maxlength="2" placeholder="例：24">
-        </div>
-
-        <div class="post-field">
-          <label>出席の厳しさ</label>
-          <select id="postAttendance">
-            <option value="厳しい">厳しい</option>
-            <option value="普通">普通</option>
-            <option value="厳しくない">厳しくない</option>
-          </select>
-        </div>
-
-        <div class="post-field">
-          <label>テスト難易度</label>
-          ${ratingSelect("postTestDifficulty")}
-        </div>
-
-        <div class="post-field">
-          <label>レポート難易度</label>
-          ${ratingSelect("postReportDifficulty")}
-        </div>
-
-        <div class="post-field">
-          <label>レポート量</label>
-          ${ratingSelect("postReportAmount")}
-        </div>
-
-        <div class="post-field">
-          <label>課題難易度</label>
-          ${ratingSelect("postAssignmentDifficulty")}
-        </div>
-
-        <div class="post-field">
-          <label>課題量</label>
-          ${ratingSelect("postAssignmentAmount")}
-        </div>
-
-        <div class="post-field full">
-          <label>一言レビュー</label>
-          <textarea id="postComment" placeholder="授業の雰囲気、注意点、課題やテストについて自由に書いてください"></textarea>
-        </div>
+    <div
+      id="courseSlider"
+      class="course-slider"
+    >
+      <div class="loading-card">
+        読み込み中...
       </div>
-
-      <button class="post-btn" id="postSubmitButton">口コミを投稿</button>
-      <div class="post-note">投稿後、すぐ画面に反映されます。</div>
     </div>
-  `;
-}
 
-function ratingSelect(id){
-  return `
-    <select id="${id}">
-      <option value="">未入力</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-    </select>
-  `;
-}
+    <div
+      id="indicator"
+      class="indicator"
+    ></div>
 
-function toNumberOrNull(value){
-  if(value === null || value === undefined || value === ""){
-    return null;
-  }
-  return Number(value);
-}
+    <div id="courseDetail"></div>
 
-async function submitReview(classId){
-  const studentYear = document.getElementById("postStudentYear").value.trim() || "24";
-  const attendance = document.getElementById("postAttendance").value;
-  const testDifficulty = document.getElementById("postTestDifficulty").value;
-  const reportDifficulty = document.getElementById("postReportDifficulty").value;
-  const reportAmount = document.getElementById("postReportAmount").value;
-  const assignmentDifficulty = document.getElementById("postAssignmentDifficulty").value;
-  const assignmentAmount = document.getElementById("postAssignmentAmount").value;
-  const comment = document.getElementById("postComment").value.trim();
+  </main>
 
-  if(comment === ""){
-    alert("一言レビューを入力してください。");
-    return;
-  }
+  <script type="module">
+    import {
+      initializeApp
+    } from
+      "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
 
-  const button = document.getElementById("postSubmitButton");
-  button.disabled = true;
-  button.textContent = "投稿中...";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      addDoc
+    } from
+      "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
-  try{
-    await addDoc(collection(db, "reviews"), {
-      classId: Number(classId),
-      studentYear,
-      attendance,
-      testDifficulty: toNumberOrNull(testDifficulty),
-      reportDifficulty: toNumberOrNull(reportDifficulty),
-      reportAmount: toNumberOrNull(reportAmount),
-      assignmentDifficulty: toNumberOrNull(assignmentDifficulty),
-      assignmentAmount: toNumberOrNull(assignmentAmount),
-      comment,
-      createdAt: new Date()
-    });
+    const firebaseConfig = {
+      apiKey:
+        "AIzaSyCs2G-LhqC8ZrkvK5QJtYHiMGAK6rKPh9E",
 
-    alert("口コミを投稿しました。");
-    await loadData(classId);
-  }catch(error){
-    console.error(error);
-    alert("投稿に失敗しました。Firestoreのルールを確認してください。");
-  }finally{
-    button.disabled = false;
-    button.textContent = "口コミを投稿";
-  }
-}
+      authDomain:
+        "search-9aee7.firebaseapp.com",
 
-document.addEventListener("click", async (event)=>{
-  if(event.target && event.target.id === "postSubmitButton"){
-    const c = currentResults[selectedIndex];
-    if(c){
-      await submitReview(c.id);
+      projectId:
+        "search-9aee7",
+
+      storageBucket:
+        "search-9aee7.firebasestorage.app",
+
+      messagingSenderId:
+        "541254473766",
+
+      appId:
+        "1:541254473766:web:ea29fc67955cc0f4dfeee7"
+    };
+
+    const app =
+      initializeApp(firebaseConfig);
+
+    const db =
+      getFirestore(app);
+
+    let classes = [];
+    let reviews = [];
+    let currentResults = [];
+    let selectedIndex = 0;
+
+    /*
+      HTMLに表示する文字を安全な形へ変換
+    */
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
-  }
-});
 
-loadData();
-</script>
+    /*
+      classes.jsonとFirestoreのレビューを読み込む
+    */
+    async function loadData(
+      preferredClassId = null
+    ) {
+      try {
+        const classResponse =
+          await fetch("classes.json");
+
+        if (!classResponse.ok) {
+          throw new Error(
+            "classes.jsonを読み込めませんでした。"
+          );
+        }
+
+        classes =
+          await classResponse.json();
+
+        const snapshot =
+          await getDocs(
+            collection(db, "reviews")
+          );
+
+        reviews =
+          snapshot.docs.map(doc => ({
+            firestoreId: doc.id,
+            ...doc.data()
+          }));
+
+        searchClasses(preferredClassId);
+
+      } catch (error) {
+        document
+          .getElementById("courseSlider")
+          .innerHTML = "";
+
+        document
+          .getElementById("indicator")
+          .innerHTML = "";
+
+        document
+          .getElementById("courseDetail")
+          .innerHTML = `
+            <section class="card">
+              データの読み込みに失敗しました。
+              Firestoreまたはclasses.jsonを確認してください。
+            </section>
+          `;
+
+        console.error(error);
+      }
+    }
+
+    /*
+      星の表示
+    */
+    function stars(n) {
+      if (
+        n === null ||
+        n === undefined ||
+        n === ""
+      ) {
+        return "未入力";
+      }
+
+      const rating =
+        Math.max(
+          0,
+          Math.min(5, Number(n))
+        );
+
+      return (
+        "★".repeat(rating) +
+        "☆".repeat(5 - rating)
+      );
+    }
+
+    /*
+      授業の評価方法を取得
+    */
+    function getEvaluation(course) {
+      return course.evaluation || {};
+    }
+
+    /*
+      評価項目名に対応する割合を取得
+    */
+    function getEvalValue(
+      course,
+      names
+    ) {
+      const evaluation =
+        getEvaluation(course);
+
+      for (const name of names) {
+        if (
+          evaluation[name] !== undefined
+        ) {
+          const value =
+            Number(evaluation[name]);
+
+          return Number.isFinite(value)
+            ? value
+            : 0;
+        }
+      }
+
+      return 0;
+    }
+
+    /*
+      URLパラメータから数値を取得
+      0も正しく扱う
+    */
+    function getNumberParameter(
+      params,
+      name,
+      defaultValue
+    ) {
+      const rawValue =
+        params.get(name);
+
+      if (
+        rawValue === null ||
+        rawValue === ""
+      ) {
+        return defaultValue;
+      }
+
+      const numberValue =
+        Number(rawValue);
+
+      return Number.isFinite(numberValue)
+        ? numberValue
+        : defaultValue;
+    }
+
+    /*
+      検索用文字列を正規化
+    */
+    function normalizeText(value) {
+      return String(value ?? "")
+        .normalize("NFKC")
+        .toLowerCase()
+        .replace(/\s+/g, "");
+    }
+
+    function attendanceClass(value) {
+      if (value === "厳しくない") {
+        return "attendance-ok";
+      }
+
+      if (value === "厳しい") {
+        return "attendance-hard";
+      }
+
+      if (value === "普通") {
+        return "attendance-depends";
+      }
+
+      return "attendance-unknown";
+    }
+
+    function mostCommonAttendance(
+      classReviews
+    ) {
+      if (classReviews.length === 0) {
+        return "不明";
+      }
+
+      const count = {};
+
+      classReviews.forEach(review => {
+        const key =
+          review.attendance || "不明";
+
+        count[key] =
+          (count[key] || 0) + 1;
+      });
+
+      return Object
+        .entries(count)
+        .sort(
+          (a, b) => b[1] - a[1]
+        )[0][0];
+    }
+
+    /*
+      範囲条件を画面表示用の文字に変換
+    */
+    function rangeConditionText(
+      label,
+      min,
+      max
+    ) {
+      if (min === 0 && max === 100) {
+        return "";
+      }
+
+      if (min === 0 && max === 0) {
+        return `${label}なし`;
+      }
+
+      if (min === max) {
+        return `${label}${min}％`;
+      }
+
+      return (
+        `${label}${min}％〜${max}％`
+      );
+    }
+
+    /*
+      現在の検索条件を上部に表示
+    */
+    function displaySearchConditions(
+      conditions
+    ) {
+      const summary =
+        document.getElementById(
+          "conditionSummary"
+        );
+
+      const conditionTexts = [];
+
+      if (conditions.keyword) {
+        conditionTexts.push(
+          `キーワード：${conditions.keyword}`
+        );
+      }
+
+      const testText =
+        rangeConditionText(
+          "試験",
+          conditions.minTest,
+          conditions.maxTest
+        );
+
+      const reportText =
+        rangeConditionText(
+          "レポート",
+          conditions.minReport,
+          conditions.maxReport
+        );
+
+      const assignmentText =
+        rangeConditionText(
+          "課題",
+          conditions.minAssignment,
+          conditions.maxAssignment
+        );
+
+      if (testText) {
+        conditionTexts.push(testText);
+      }
+
+      if (reportText) {
+        conditionTexts.push(reportText);
+      }
+
+      if (assignmentText) {
+        conditionTexts.push(
+          assignmentText
+        );
+      }
+
+      if (
+        conditions.includePresentation
+      ) {
+        conditionTexts.push(
+          "発表を含む"
+        );
+      }
+
+      if (conditions.includePractice) {
+        conditionTexts.push(
+          "演習を含む"
+        );
+      }
+
+      if (conditions.includeQuiz) {
+        conditionTexts.push(
+          "小テストを含む"
+        );
+      }
+
+      if (conditions.includeOther) {
+        conditionTexts.push(
+          "その他を含む"
+        );
+      }
+
+      if (conditions.attendance) {
+        conditionTexts.push(
+          `出席：${conditions.attendance}`
+        );
+      }
+
+      if (conditionTexts.length === 0) {
+        summary.innerHTML = `
+          <span class="condition-empty">
+            すべての授業を表示しています
+          </span>
+        `;
+
+        return;
+      }
+
+      summary.innerHTML =
+        conditionTexts
+          .map(text => `
+            <span class="condition-tag">
+              ${escapeHtml(text)}
+            </span>
+          `)
+          .join("");
+    }
+
+    /*
+      授業を検索する
+    */
+    function searchClasses(
+      preferredClassId = null
+    ) {
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
+
+      const keyword =
+        (params.get("keyword") || "")
+          .trim();
+
+      const attendance =
+        params.get("attendance") || "";
+
+      const minTest =
+        getNumberParameter(
+          params,
+          "minTest",
+          0
+        );
+
+      const maxTest =
+        getNumberParameter(
+          params,
+          "maxTest",
+          100
+        );
+
+      const minReport =
+        getNumberParameter(
+          params,
+          "minReport",
+          0
+        );
+
+      const maxReport =
+        getNumberParameter(
+          params,
+          "maxReport",
+          100
+        );
+
+      const minAssignment =
+        getNumberParameter(
+          params,
+          "minAssignment",
+          0
+        );
+
+      const maxAssignment =
+        getNumberParameter(
+          params,
+          "maxAssignment",
+          100
+        );
+
+      /*
+        checkboxはチェックされた場合のみ
+        URLパラメータに含まれる
+      */
+      const includePresentation =
+        params.has(
+          "includePresentation"
+        );
+
+      const includePractice =
+        params.has(
+          "includePractice"
+        );
+
+      const includeQuiz =
+        params.has(
+          "includeQuiz"
+        );
+
+      const includeOther =
+        params.has(
+          "includeOther"
+        );
+
+      const conditions = {
+        keyword,
+        attendance,
+        minTest,
+        maxTest,
+        minReport,
+        maxReport,
+        minAssignment,
+        maxAssignment,
+        includePresentation,
+        includePractice,
+        includeQuiz,
+        includeOther
+      };
+
+      displaySearchConditions(
+        conditions
+      );
+
+      const normalizedKeyword =
+        normalizeText(keyword);
+
+      const results =
+        classes.filter(course => {
+          const classReviews =
+            reviews.filter(
+              review =>
+                Number(review.classId) ===
+                Number(course.id)
+            );
+
+          const searchableText =
+            normalizeText([
+              course.name,
+              course.teacher,
+              course.description,
+              ...(course.tags || [])
+            ].join(" "));
+
+          const testRate =
+            getEvalValue(
+              course,
+              ["試験", "テスト"]
+            );
+
+          const reportRate =
+            getEvalValue(
+              course,
+              ["レポート"]
+            );
+
+          const assignmentRate =
+            getEvalValue(
+              course,
+              ["課題"]
+            );
+
+          const presentationRate =
+            getEvalValue(
+              course,
+              ["発表"]
+            );
+
+          const practiceRate =
+            getEvalValue(
+              course,
+              ["演習"]
+            );
+
+          const quizRate =
+            getEvalValue(
+              course,
+              ["小テスト"]
+            );
+
+          const otherRate =
+            getEvalValue(
+              course,
+              ["その他"]
+            );
+
+          const keywordOK =
+            normalizedKeyword === "" ||
+            searchableText.includes(
+              normalizedKeyword
+            );
+
+          const attendanceOK =
+            attendance === "" ||
+            classReviews.some(
+              review =>
+                review.attendance ===
+                attendance
+            );
+
+          /*
+            チェックされていない項目は
+            検索条件にしない。
+
+            チェックされた項目は
+            評価割合が0より大きい授業だけ通す。
+          */
+          const presentationOK =
+            !includePresentation ||
+            presentationRate > 0;
+
+          const practiceOK =
+            !includePractice ||
+            practiceRate > 0;
+
+          const quizOK =
+            !includeQuiz ||
+            quizRate > 0;
+
+          const otherOK =
+            !includeOther ||
+            otherRate > 0;
+
+          return (
+            testRate >= minTest &&
+            testRate <= maxTest &&
+
+            reportRate >= minReport &&
+            reportRate <= maxReport &&
+
+            assignmentRate >=
+              minAssignment &&
+            assignmentRate <=
+              maxAssignment &&
+
+            presentationOK &&
+            practiceOK &&
+            quizOK &&
+            otherOK &&
+
+            attendanceOK &&
+            keywordOK
+          );
+        });
+
+      displayResults(
+        results,
+        preferredClassId
+      );
+    }
+
+    /*
+      検索結果一覧を表示
+    */
+    function displayResults(
+      results,
+      preferredClassId = null
+    ) {
+      currentResults = results;
+      selectedIndex = 0;
+
+      document
+        .getElementById("resultCount")
+        .textContent =
+          `検索結果：${results.length}件`;
+
+      const slider =
+        document.getElementById(
+          "courseSlider"
+        );
+
+      const indicator =
+        document.getElementById(
+          "indicator"
+        );
+
+      const detail =
+        document.getElementById(
+          "courseDetail"
+        );
+
+      slider.innerHTML = "";
+      indicator.innerHTML = "";
+      detail.innerHTML = "";
+
+      if (results.length === 0) {
+        slider.style.display = "none";
+        indicator.style.display = "none";
+
+        detail.innerHTML = `
+          <section class="card">
+            条件に合う授業が見つかりませんでした。
+            条件を変更して、もう一度検索してください。
+          </section>
+        `;
+
+        return;
+      }
+
+      slider.style.display = "flex";
+      indicator.style.display = "flex";
+
+      const foundPreferredIndex =
+        preferredClassId === null
+          ? 0
+          : results.findIndex(
+              course =>
+                Number(course.id) ===
+                Number(preferredClassId)
+            );
+
+      const preferredIndex =
+        foundPreferredIndex >= 0
+          ? foundPreferredIndex
+          : 0;
+
+      selectedIndex =
+        preferredIndex;
+
+      results.forEach(
+        (course, index) => {
+          const classReviews =
+            reviews.filter(
+              review =>
+                Number(review.classId) ===
+                Number(course.id)
+            );
+
+          const attendance =
+            mostCommonAttendance(
+              classReviews
+            );
+
+          const mini =
+            document.createElement("div");
+
+          mini.className =
+            "course-mini-card" +
+            (
+              index === preferredIndex
+                ? " active"
+                : ""
+            );
+
+          mini.setAttribute(
+            "role",
+            "button"
+          );
+
+          mini.setAttribute(
+            "tabindex",
+            "0"
+          );
+
+          mini.innerHTML = `
+            <div class="mini-title">
+              ${escapeHtml(course.name)}
+            </div>
+
+            <div class="mini-teacher">
+              ${escapeHtml(course.teacher)}
+            </div>
+
+            <div>
+              <span
+                class="attendance-badge
+                ${attendanceClass(attendance)}"
+              >
+                ${escapeHtml(attendance)}
+              </span>
+            </div>
+
+            <div class="mini-tags">
+              ${(course.tags || [])
+                .slice(0, 3)
+                .map(tag => `
+                  <span>
+                    ${escapeHtml(tag)}
+                  </span>
+                `)
+                .join("")}
+            </div>
+          `;
+
+          function openCourse() {
+            selectCourse(index);
+
+            mini.scrollIntoView({
+              behavior: "smooth",
+              inline: "center",
+              block: "nearest"
+            });
+          }
+
+          mini.addEventListener(
+            "click",
+            openCourse
+          );
+
+          mini.addEventListener(
+            "keydown",
+            event => {
+              if (
+                event.key === "Enter" ||
+                event.key === " "
+              ) {
+                event.preventDefault();
+                openCourse();
+              }
+            }
+          );
+
+          slider.appendChild(mini);
+
+          const dot =
+            document.createElement("div");
+
+          dot.className =
+            "indicator-dot" +
+            (
+              index === preferredIndex
+                ? " active"
+                : ""
+            );
+
+          dot.addEventListener(
+            "click",
+            () => {
+              selectCourse(index);
+
+              slider
+                .children[index]
+                .scrollIntoView({
+                  behavior: "smooth",
+                  inline: "center",
+                  block: "nearest"
+                });
+            }
+          );
+
+          indicator.appendChild(dot);
+        }
+      );
+
+      renderDetail(
+        preferredIndex
+      );
+
+      window.setTimeout(() => {
+        if (
+          slider.children[
+            preferredIndex
+          ]
+        ) {
+          slider
+            .children[preferredIndex]
+            .scrollIntoView({
+              behavior: "smooth",
+              inline: "center",
+              block: "nearest"
+            });
+        }
+      }, 100);
+    }
+
+    /*
+      選択授業を変更
+    */
+    function selectCourse(index) {
+      if (
+        index < 0 ||
+        index >= currentResults.length
+      ) {
+        return;
+      }
+
+      selectedIndex = index;
+
+      document
+        .querySelectorAll(
+          ".course-mini-card"
+        )
+        .forEach((card, cardIndex) => {
+          card.classList.toggle(
+            "active",
+            cardIndex === index
+          );
+        });
+
+      document
+        .querySelectorAll(
+          ".indicator-dot"
+        )
+        .forEach((dot, dotIndex) => {
+          dot.classList.toggle(
+            "active",
+            dotIndex === index
+          );
+        });
+
+      renderDetail(index);
+    }
+
+    /*
+      授業詳細を表示
+    */
+    function renderDetail(index) {
+      const course =
+        currentResults[index];
+
+      if (!course) {
+        return;
+      }
+
+      const classReviews =
+        reviews.filter(
+          review =>
+            Number(review.classId) ===
+            Number(course.id)
+        );
+
+      const evaluation =
+        getEvaluation(course);
+
+      const attendance =
+        mostCommonAttendance(
+          classReviews
+        );
+
+      const evaluationEntries =
+        Object.entries(evaluation);
+
+      const evaluationHtml =
+        evaluationEntries.length === 0
+          ? `
+            <div class="empty">
+              評価方法が登録されていません。
+            </div>
+          `
+          : evaluationEntries
+              .map(
+                ([name, value]) => {
+                  const numericValue =
+                    Number(value) || 0;
+
+                  return `
+                    <div class="eval-row">
+                      <div>
+                        ${escapeHtml(name)}
+                      </div>
+
+                      <div class="bar-bg">
+                        <div
+                          class="bar"
+                          style="
+                            width:
+                            ${Math.max(
+                              0,
+                              Math.min(
+                                100,
+                                numericValue
+                              )
+                            )}%;
+                          "
+                        ></div>
+                      </div>
+
+                      <div>
+                        ${escapeHtml(
+                          numericValue
+                        )}%
+                      </div>
+                    </div>
+                  `;
+                }
+              )
+              .join("");
+
+      const reviewHtml =
+        classReviews
+          .map(review => `
+            <div class="review-card">
+
+              <div>
+                <div class="avatar"></div>
+
+                <div class="year">
+                  学籍番号上二桁
+                  <br>
+
+                  <span>
+                    ${escapeHtml(
+                      review.studentYear ||
+                      "24"
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <div>
+                  <strong>
+                    出席の厳しさ：
+                  </strong>
+
+                  <span
+                    class="
+                      attendance-badge
+                      ${attendanceClass(
+                        review.attendance
+                      )}
+                    "
+                  >
+                    ${escapeHtml(
+                      review.attendance ||
+                      "不明"
+                    )}
+                  </span>
+                </div>
+
+                <div class="review-grid">
+
+                  <div class="review-item">
+                    テスト難易度：
+                    <span class="stars">
+                      ${stars(
+                        review.testDifficulty
+                      )}
+                    </span>
+                  </div>
+
+                  <div class="review-item">
+                    レポート難易度：
+                    <span class="stars">
+                      ${stars(
+                        review.reportDifficulty
+                      )}
+                    </span>
+                  </div>
+
+                  <div class="review-item">
+                    レポート量：
+                    <span class="stars">
+                      ${stars(
+                        review.reportAmount
+                      )}
+                    </span>
+                  </div>
+
+                  <div class="review-item">
+                    課題難易度：
+                    <span class="stars">
+                      ${stars(
+                        review.assignmentDifficulty
+                      )}
+                    </span>
+                  </div>
+
+                  <div class="review-item">
+                    課題量：
+                    <span class="stars">
+                      ${stars(
+                        review.assignmentAmount
+                      )}
+                    </span>
+                  </div>
+
+                </div>
+
+                <div class="comment">
+                  <strong>
+                    先輩レビュー：
+                  </strong>
+                  <br>
+
+                  ${escapeHtml(
+                    review.comment || ""
+                  )}
+                </div>
+              </div>
+
+            </div>
+          `)
+          .join("");
+
+      document
+        .getElementById("courseDetail")
+        .innerHTML = `
+          <section class="card">
+
+            <h2 class="course-title">
+              ${escapeHtml(course.name)}
+            </h2>
+
+            <p class="teacher">
+              <strong>先生：</strong>
+              ${escapeHtml(course.teacher)}
+            </p>
+
+            <div class="tags">
+              ${(course.tags || [])
+                .map(tag => `
+                  <span class="tag">
+                    ${escapeHtml(tag)}
+                  </span>
+                `)
+                .join("")}
+            </div>
+
+            ${
+              course.description
+                ? `
+                  <p class="description">
+                    ${escapeHtml(
+                      course.description
+                    )}
+                  </p>
+                `
+                : ""
+            }
+
+            <div class="course-body">
+
+              <div>
+                <h3>
+                  評価方法の割合
+                </h3>
+
+                ${evaluationHtml}
+              </div>
+
+              <div>
+                <h3>
+                  出席の厳しさ
+                </h3>
+
+                <div class="attendance-box">
+                  <span
+                    class="
+                      attendance-badge
+                      ${attendanceClass(
+                        attendance
+                      )}
+                    "
+                  >
+                    ${escapeHtml(attendance)}
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="review-head">
+              <h3>
+                先輩レビュー
+              </h3>
+
+              <span>
+                レビュー数：
+                ${classReviews.length}件
+              </span>
+            </div>
+
+            ${
+              reviewHtml ||
+              `
+                <div class="empty">
+                  まだレビューがありません。
+                </div>
+              `
+            }
+
+            ${postFormHtml(course.id)}
+
+          </section>
+        `;
+    }
+
+    /*
+      口コミ投稿フォーム
+    */
+    function postFormHtml(classId) {
+      return `
+        <div
+          class="post-box"
+          data-class-id="${escapeHtml(classId)}"
+        >
+
+          <h3>
+            口コミを投稿する
+          </h3>
+
+          <div class="post-grid">
+
+            <div class="post-field">
+              <label for="postStudentYear">
+                学籍番号上二桁
+              </label>
+
+              <input
+                id="postStudentYear"
+                maxlength="2"
+                inputmode="numeric"
+                placeholder="例：24"
+              >
+            </div>
+
+            <div class="post-field">
+              <label for="postAttendance">
+                出席の厳しさ
+              </label>
+
+              <select id="postAttendance">
+                <option value="厳しい">
+                  厳しい
+                </option>
+
+                <option value="普通">
+                  普通
+                </option>
+
+                <option value="厳しくない">
+                  厳しくない
+                </option>
+              </select>
+            </div>
+
+            <div class="post-field">
+              <label for="postTestDifficulty">
+                テスト難易度
+              </label>
+
+              ${ratingSelect(
+                "postTestDifficulty"
+              )}
+            </div>
+
+            <div class="post-field">
+              <label for="postReportDifficulty">
+                レポート難易度
+              </label>
+
+              ${ratingSelect(
+                "postReportDifficulty"
+              )}
+            </div>
+
+            <div class="post-field">
+              <label for="postReportAmount">
+                レポート量
+              </label>
+
+              ${ratingSelect(
+                "postReportAmount"
+              )}
+            </div>
+
+            <div class="post-field">
+              <label for="postAssignmentDifficulty">
+                課題難易度
+              </label>
+
+              ${ratingSelect(
+                "postAssignmentDifficulty"
+              )}
+            </div>
+
+            <div class="post-field">
+              <label for="postAssignmentAmount">
+                課題量
+              </label>
+
+              ${ratingSelect(
+                "postAssignmentAmount"
+              )}
+            </div>
+
+            <div class="post-field full">
+              <label for="postComment">
+                一言レビュー
+              </label>
+
+              <textarea
+                id="postComment"
+                placeholder="授業の雰囲気、注意点、課題やテストについて自由に書いてください"
+              ></textarea>
+            </div>
+
+          </div>
+
+          <button
+            type="button"
+            class="post-btn"
+            id="postSubmitButton"
+          >
+            口コミを投稿
+          </button>
+
+          <div class="post-note">
+            投稿後、すぐ画面に反映されます。
+          </div>
+
+        </div>
+      `;
+    }
+
+    function ratingSelect(id) {
+      return `
+        <select id="${id}">
+          <option value="">
+            未入力
+          </option>
+
+          <option value="1">
+            1
+          </option>
+
+          <option value="2">
+            2
+          </option>
+
+          <option value="3">
+            3
+          </option>
+
+          <option value="4">
+            4
+          </option>
+
+          <option value="5">
+            5
+          </option>
+        </select>
+      `;
+    }
+
+    function toNumberOrNull(value) {
+      if (
+        value === null ||
+        value === undefined ||
+        value === ""
+      ) {
+        return null;
+      }
+
+      return Number(value);
+    }
+
+    /*
+      口コミをFirestoreへ投稿
+    */
+    async function submitReview(
+      classId
+    ) {
+      const studentYear =
+        document
+          .getElementById(
+            "postStudentYear"
+          )
+          .value
+          .trim() || "24";
+
+      const attendance =
+        document
+          .getElementById(
+            "postAttendance"
+          )
+          .value;
+
+      const testDifficulty =
+        document
+          .getElementById(
+            "postTestDifficulty"
+          )
+          .value;
+
+      const reportDifficulty =
+        document
+          .getElementById(
+            "postReportDifficulty"
+          )
+          .value;
+
+      const reportAmount =
+        document
+          .getElementById(
+            "postReportAmount"
+          )
+          .value;
+
+      const assignmentDifficulty =
+        document
+          .getElementById(
+            "postAssignmentDifficulty"
+          )
+          .value;
+
+      const assignmentAmount =
+        document
+          .getElementById(
+            "postAssignmentAmount"
+          )
+          .value;
+
+      const comment =
+        document
+          .getElementById(
+            "postComment"
+          )
+          .value
+          .trim();
+
+      if (
+        studentYear &&
+        !/^\d{2}$/.test(studentYear)
+      ) {
+        alert(
+          "学籍番号上二桁は、2桁の数字で入力してください。"
+        );
+
+        return;
+      }
+
+      if (comment === "") {
+        alert(
+          "一言レビューを入力してください。"
+        );
+
+        return;
+      }
+
+      const button =
+        document.getElementById(
+          "postSubmitButton"
+        );
+
+      button.disabled = true;
+      button.textContent = "投稿中...";
+
+      try {
+        await addDoc(
+          collection(db, "reviews"),
+          {
+            classId: Number(classId),
+            studentYear,
+            attendance,
+
+            testDifficulty:
+              toNumberOrNull(
+                testDifficulty
+              ),
+
+            reportDifficulty:
+              toNumberOrNull(
+                reportDifficulty
+              ),
+
+            reportAmount:
+              toNumberOrNull(
+                reportAmount
+              ),
+
+            assignmentDifficulty:
+              toNumberOrNull(
+                assignmentDifficulty
+              ),
+
+            assignmentAmount:
+              toNumberOrNull(
+                assignmentAmount
+              ),
+
+            comment,
+            createdAt: new Date()
+          }
+        );
+
+        alert(
+          "口コミを投稿しました。"
+        );
+
+        await loadData(classId);
+
+      } catch (error) {
+        console.error(error);
+
+        alert(
+          "投稿に失敗しました。Firestoreのルールを確認してください。"
+        );
+
+      } finally {
+        const currentButton =
+          document.getElementById(
+            "postSubmitButton"
+          );
+
+        if (currentButton) {
+          currentButton.disabled =
+            false;
+
+          currentButton.textContent =
+            "口コミを投稿";
+        }
+      }
+    }
+
+    /*
+      動的に生成された投稿ボタンを監視
+    */
+    document.addEventListener(
+      "click",
+      async event => {
+        const button =
+          event.target.closest(
+            "#postSubmitButton"
+          );
+
+        if (!button) {
+          return;
+        }
+
+        const course =
+          currentResults[
+            selectedIndex
+          ];
+
+        if (course) {
+          await submitReview(
+            course.id
+          );
+        }
+      }
+    );
+
+    loadData();
+  </script>
 
 </body>
+
 </html>
